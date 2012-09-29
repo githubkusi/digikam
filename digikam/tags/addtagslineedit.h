@@ -83,12 +83,16 @@ public Q_SLOTS:
      */
     void setParentTag(TAlbum* album);
 
+public:
 Q_SIGNALS:
 
     /// Emitted when the user activates an action (typically, by pressing return)
     void taggingActionActivated(const TaggingAction& action);
     /// Emitted when an action is selected. This already happens if anything is typed.
     void taggingActionSelected(const TaggingAction& action);
+     
+    //kusi
+    void taggingActionFinished();
 
 protected Q_SLOTS:
 

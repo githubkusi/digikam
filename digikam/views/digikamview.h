@@ -143,6 +143,7 @@ public Q_SLOTS:
     void slotNewTag();
     void slotDeleteTag();
     void slotEditTag();
+    void slotAssignTag();
 
     // Search action slots
     void slotNewKeywordSearch();
@@ -189,6 +190,9 @@ public Q_SLOTS:
     void slotLeftSideBarActivate(SidebarWidget* widget);
     void slotLeftSideBarActivateAlbums();
     void slotLeftSideBarActivateTags();
+    
+    //kusi
+    void slotFocusMe();    
 
 private:
 
@@ -235,6 +239,7 @@ private Q_SLOTS:
     void slotPickLabelChanged(const KUrl&, int);
 
     void slotPopupFiltersView();
+   
 
 private:
 

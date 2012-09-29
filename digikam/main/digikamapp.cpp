@@ -1,5 +1,6 @@
 /* ============================================================
  *
+ *
  * This file is a part of digiKam project
  * http://www.digikam.org
  *
@@ -835,6 +836,13 @@ void DigikamApp::setupActions()
     d->deleteTagAction = new KAction(KIcon("user-trash"), i18n("Delete"), this);
     connect(d->deleteTagAction, SIGNAL(triggered()), d->view, SLOT(slotDeleteTag()));
     actionCollection()->addAction("tag_delete", d->deleteTagAction);
+    
+    // -----------------------------------------------------------
+
+    d->assignTagAction = new KAction(KIcon("tag-new"), i18n("Assign"), this);
+    d->assignTagAction->setShortcut(KShortcut(Qt::Key_T));
+    connect(d->assignTagAction, SIGNAL(triggered()), d->view, SLOT(slotAssignTag()));
+    actionCollection()->addAction("tag_assign", d->assignTagAction);   
 
     // -----------------------------------------------------------
 

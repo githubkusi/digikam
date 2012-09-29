@@ -364,12 +364,27 @@ void AddTagsLineEdit::slotCompletionBoxCancelled()
 
 void AddTagsLineEdit::slotReturnPressed(const QString& text)
 {
-    Q_UNUSED(text);
+    //kusi    
+    if (text.isEmpty())
+    {
+      //focus back to mainview
+      kDebug() << "focus back to main";
+      emit taggingActionFinished();
+      return;
+    }
+    
+    //Q_UNUSED(text);
     emit taggingActionActivated(currentTaggingAction());
+    
+    
 }
 
 void AddTagsLineEdit::slotTextChanged(const QString& text)
 {
+    //kusi  
+    kDebug() << "kusi slottextchanged";
+    //setText("slottext changed");
+
     if (text.isEmpty())
     {
         setCurrentTaggingAction(TaggingAction());

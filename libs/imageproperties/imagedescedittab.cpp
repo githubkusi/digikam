@@ -77,6 +77,10 @@
 #include "colorlabelwidget.h"
 #include "picklabelwidget.h"
 
+//kusi
+#include "searchtextbar.h"
+#include "addtagslineedit.h"
+
 namespace Digikam
 {
 
@@ -119,7 +123,7 @@ public:
         tagCheckView               = 0;
         colorLabelSelector         = 0;
         pickLabelSelector          = 0;
-    }
+    }    
 
     bool                 modified;
     bool                 ignoreImageAttributesWatch;
@@ -283,7 +287,7 @@ ImageDescEditTab::ImageDescEditTab(QWidget* parent)
     d->newTagEdit->setTagTreeView(d->tagCheckView);
     //, "ImageDescEditTabNewTagEdit",
     //d->newTagEdit->setCaseSensitive(false);
-    d->newTagEdit->setClickMessage(i18n("Enter new tag here..."));
+    d->newTagEdit->setClickMessage(i18n("blablabla..."));
     //d->newTagEdit->setWhatsThis(i18n("Enter the text used to create new tags here. "
     //                                 "'/' can be used to create a hierarchy of tags. "
     //                                 "',' can be used to create more than one hierarchy at the same time."));
@@ -481,6 +485,18 @@ ImageDescEditTab::~ImageDescEditTab()
 
     delete d;
 }
+
+SearchTextBar* ImageDescEditTab::getMyBingo()
+{
+  return d->tagsSearchBar;
+}
+
+AddTagsLineEdit * ImageDescEditTab::getMyBingo2()
+{
+  return d->newTagEdit;
+}
+
+
 
 bool ImageDescEditTab::singleSelection() const
 {
@@ -1429,5 +1445,4 @@ void ImageDescEditTab::slotApplyChangesToAllVersions()
     d->revertBtn->setEnabled(false);
     d->applyToAllVersionsButton->setEnabled(false);
 }
-
 }  // namespace Digikam

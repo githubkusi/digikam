@@ -63,8 +63,8 @@ public:
         textQueryCompletion(false),
         hasCaseSensitive(true),
         highlightOnResult(true),
-        hasResultColor(200, 255, 200),
-        hasNoResultColor(255, 200, 200),
+        hasResultColor(255, 0, 0),
+        hasNoResultColor(0, 255, 0),
         completion(0),
         filterModel(0)
     {
@@ -95,7 +95,9 @@ SearchTextBar::SearchTextBar(QWidget* parent, const char* name, const QString& m
     setClearButtonShown(true);
     setClickMessage(msg);
     setObjectName(name + QString(" Search Text Tool"));
-
+    
+    
+    
     d->completion = new ModelCompletion;
     setCompletionObject(d->completion, true);
     setAutoDeleteCompletionObject(true);
@@ -106,6 +108,7 @@ SearchTextBar::SearchTextBar(QWidget* parent, const char* name, const QString& m
             this, SLOT(slotTextChanged(QString)));
 
     loadState();
+    setText("searchtextbar.cpp.bla");
 }
 
 SearchTextBar::~SearchTextBar()
@@ -246,6 +249,7 @@ SearchTextSettings SearchTextBar::searchTextSettings() const
 
 void SearchTextBar::slotTextChanged(const QString& text)
 {
+    kDebug() << "enter slotTextChanged with " << text;
     if (text.isEmpty())
     {
         setPalette(QPalette());

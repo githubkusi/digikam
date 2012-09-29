@@ -33,11 +33,15 @@
 // KDE includes
 
 #include <kurl.h>
+#include <boost/graph/buffer_concepts.hpp>
 
 // Local includes
 
 #include "editorwindow.h"
 #include "imageinfo.h"
+
+//kusi
+#include "imagepropertiessidebardb.h"
 
 class QDragMoveEvent;
 class QDropEvent;
@@ -66,6 +70,9 @@ public:
     virtual VersionManager* versionManager() const;
 
     void toggleTag(int tagID);
+    
+    ImagePropertiesSideBarDB* getRightSideBar();
+    
 
 public Q_SLOTS:
 
@@ -123,9 +130,9 @@ private:
     void assignColorLabel(const ImageInfo& info, int colorId);
     void assignRating(const ImageInfo& info, int rating);
 
-    ThumbBarDock* thumbBar() const;
+    ThumbBarDock* thumbBar() const;      
     Sidebar* rightSideBar() const;
-
+    
     ImageWindow();
 
 Q_SIGNALS: // private signals

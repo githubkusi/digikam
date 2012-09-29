@@ -45,6 +45,11 @@
 #include "albummodel.h"
 #include "metadatahub.h"
 
+//kusi
+#include "searchtextbar.h"
+#include "addtagslineedit.h"
+
+
 namespace Digikam
 {
 class ImageInfo;
@@ -66,6 +71,10 @@ public:
     void setItems(const ImageInfoList& infos);
     void populateTags();
     void setFocusToTagsView();
+    
+    //kusi
+    SearchTextBar* getMyBingo();
+    AddTagsLineEdit* getMyBingo2();
 
 Q_SIGNALS:
 

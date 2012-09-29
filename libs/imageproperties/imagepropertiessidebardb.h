@@ -76,6 +76,7 @@ public:
     ImagePropertiesVersionsTab* getFiltersHistoryTab();
     ImageDescEditTab*           imageDescEditTab() const;
 
+
 Q_SIGNALS:
 
     void signalFirstItem();

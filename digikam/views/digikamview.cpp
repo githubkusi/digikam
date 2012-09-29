@@ -27,6 +27,10 @@
 
 #include "digikamview.moc"
 
+// kusis include
+#include <iostream>
+
+
 // Qt includes
 
 #include <QShortcut>
@@ -77,6 +81,9 @@
 #include "searchxml.h"
 #include "faceiface.h"
 #include "versionmanagersettings.h"
+
+//kusi
+#include "imagewindow.h"
 
 namespace Digikam
 {
@@ -297,6 +304,16 @@ DigikamView::DigikamView(QWidget* parent, DigikamModelCollection* modelCollectio
 
     slotSidebarTabTitleStyleChanged();
     setupConnections();
+    
+    //kusi
+//     setTabOrder(d->stackedview->currentWidget(),d->rightSideBar->imageDescEditTab()->getMyBingo2());
+//     setTabOrder(d->rightSideBar->imageDescEditTab()->getMyBingo2(),d->stackedview->currentWidget());    
+            
+    setTabOrder(d->stackedview->imagePreviewView(),d->rightSideBar->imageDescEditTab()->getMyBingo2());
+    //setTabOrder(d->rightSideBar->imageDescEditTab()->getMyBingo2(),d->stackedview->imagePreviewView());    
+    connect(d->rightSideBar->imageDescEditTab()->getMyBingo2(), SIGNAL(taggingActionFinished()),
+            this, SLOT(slotFocusMe()));
+    
 }
 
 DigikamView::~DigikamView()
@@ -801,6 +818,25 @@ void DigikamView::slotDeleteTag()
 void DigikamView::slotEditTag()
 {
     d->tagModificationHelper->slotTagEdit(d->tagViewSideBar->currentAlbum());
+}
+
+void DigikamView::slotAssignTag()
+{
+    //std::cout << "assign tag fired" << std::endl;
+    kDebug() << "kdebug enter slotAssignTag";
+    //d->tagFilterWidget->setFocus();
+    
+    //ImageWindow* iw = ImageWindow::imageWindow();
+    //SearchTextBar* bla = iw->getRightSideBar()->imageDescEditTab()->getMyBingo();
+    //AddTagsLineEdit * bla = iw->getRightSideBar()->imageDescEditTab()->getMyBingo2();    
+    AddTagsLineEdit * bla = d->rightSideBar->imageDescEditTab()->getMyBingo2();
+    bla->setText("slotAssignTag bingo2");
+    bla->setFocus(Qt::ShortcutFocusReason);
+    bla->repaint();
+    bla->setText("slotAssignTag bla");    
+    
+    
+    
 }
 
 void DigikamView::slotNewKeywordSearch()
@@ -1991,6 +2027,12 @@ bool DigikamView::hasCurrentItem() const
     // We should actually get this directly from the selection model,
     // but the iconView is fine for now.
     return !d->iconView->currentInfo().isNull();
+}
+
+void DigikamView::slotFocusMe()
+{
+    kDebug() << "enter slot focus me";
+    d->stackedview->currentWidget()->setFocus();
 }
 
 }  // namespace Digikam
