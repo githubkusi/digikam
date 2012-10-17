@@ -40,9 +40,6 @@
 #include "editorwindow.h"
 #include "imageinfo.h"
 
-//kusi
-#include "imagepropertiessidebardb.h"
-
 class QDragMoveEvent;
 class QDropEvent;
 
@@ -70,9 +67,6 @@ public:
     virtual VersionManager* versionManager() const;
 
     void toggleTag(int tagID);
-    
-    ImagePropertiesSideBarDB* getRightSideBar();
-    
 
 public Q_SLOTS:
 

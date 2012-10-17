@@ -287,7 +287,7 @@ ImageDescEditTab::ImageDescEditTab(QWidget* parent)
     d->newTagEdit->setTagTreeView(d->tagCheckView);
     //, "ImageDescEditTabNewTagEdit",
     //d->newTagEdit->setCaseSensitive(false);
-    d->newTagEdit->setClickMessage(i18n("blablabla..."));
+    d->newTagEdit->setClickMessage(i18n("Enter new tag here..."));
     //d->newTagEdit->setWhatsThis(i18n("Enter the text used to create new tags here. "
     //                                 "'/' can be used to create a hierarchy of tags. "
     //                                 "',' can be used to create more than one hierarchy at the same time."));

@@ -823,20 +823,10 @@ void DigikamView::slotEditTag()
 void DigikamView::slotAssignTag()
 {
     //std::cout << "assign tag fired" << std::endl;
-    kDebug() << "kdebug enter slotAssignTag";
-    //d->tagFilterWidget->setFocus();
-    
-    //ImageWindow* iw = ImageWindow::imageWindow();
-    //SearchTextBar* bla = iw->getRightSideBar()->imageDescEditTab()->getMyBingo();
-    //AddTagsLineEdit * bla = iw->getRightSideBar()->imageDescEditTab()->getMyBingo2();    
+    kDebug() << "kdebug enter slotAssignTag";    
     AddTagsLineEdit * bla = d->rightSideBar->imageDescEditTab()->getMyBingo2();
     bla->setText("slotAssignTag bingo2");
-    bla->setFocus(Qt::ShortcutFocusReason);
-    bla->repaint();
-    bla->setText("slotAssignTag bla");    
-    
-    
-    
+    bla->setFocus(Qt::ShortcutFocusReason);    
 }
 
 void DigikamView::slotNewKeywordSearch()

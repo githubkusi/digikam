@@ -1767,11 +1767,5 @@ void ImageWindow::slotDBStat()
 {
     showDigikamDatabaseStat();
 }
-
-ImagePropertiesSideBarDB* ImageWindow::getRightSideBar()
-{
-  return d->rightSideBar;
-}
-
 }  // namespace Digikam
 

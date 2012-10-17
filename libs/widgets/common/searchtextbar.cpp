@@ -63,8 +63,8 @@ public:
         textQueryCompletion(false),
         hasCaseSensitive(true),
         highlightOnResult(true),
-        hasResultColor(255, 0, 0),
-        hasNoResultColor(0, 255, 0),
+        hasResultColor(200, 255, 200),
+        hasNoResultColor(255, 200, 200),
         completion(0),
         filterModel(0)
     {
@@ -108,7 +108,6 @@ SearchTextBar::SearchTextBar(QWidget* parent, const char* name, const QString& m
             this, SLOT(slotTextChanged(QString)));
 
     loadState();
-    setText("searchtextbar.cpp.bla");
 }
 
 SearchTextBar::~SearchTextBar()

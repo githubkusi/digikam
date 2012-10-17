@@ -56,6 +56,7 @@ extern "C"
 #include "collectionmanager.h"
 #include "collectionlocation.h"
 #include "dbactiontype.h"
+#include "tagscache.h"
 
 namespace Digikam
 {
@@ -3036,15 +3037,19 @@ void AlbumDB::addItemTag(qlonglong imageID, int tagID)
                     tagID );
 
     d->db->recordChangeset(ImageTagChangeset(imageID, tagID, ImageTagChangeset::Added));
-
-    if (!d->recentlyAssignedTags.contains(tagID))
+    
+    TagsCache * tc = TagsCache::instance();
+          
+    //don't save pick or color tags
+    if (tc->isInternalTag(tagID))
+        return;
+    
+    //move current tag to front       
+    d->recentlyAssignedTags.removeAll(tagID);
+    d->recentlyAssignedTags.push_front(tagID);
+    if (d->recentlyAssignedTags.size() > 10)
     {
-        d->recentlyAssignedTags.push_front(tagID);
-
-        if (d->recentlyAssignedTags.size() > 10)
-        {
-            d->recentlyAssignedTags.pop_back();
-        }
+        d->recentlyAssignedTags.pop_back();
     }
 }
 

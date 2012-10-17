@@ -97,14 +97,6 @@ ImagePropertiesSideBarDB::ImagePropertiesSideBarDB(QWidget* parent, SidebarSplit
       d(new ImagePropertiesSideBarDBPriv)
 {
     d->desceditTab        = new ImageDescEditTab(parent);
-    
-    //debug kusi
-    //d->desceditTab->tagsSearchBar->setText("safsdafs");
-    //SearchTextBar* bla = d->desceditTab->getMyBingo();
-    //bla->setText("bingoo!");    
-    //end debug
-    
-    
     d->versionsHistoryTab = new ImagePropertiesVersionsTab(parent);
 
     appendTab(d->desceditTab, SmallIcon("imagecomment"), i18n("Caption/Tags"));
