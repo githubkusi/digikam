@@ -486,7 +486,7 @@ ImageDescEditTab::~ImageDescEditTab()
     delete d;
 }
 
-void ImageDescEditTab::focusNewTagEdit()
+void ImageDescEditTab::setFocusToNewTagEdit()
 {
     //select "Tags" tab and focus the NewTagLineEdit widget
     d->tabWidget->setCurrentIndex(ImageDescEditTabPriv::TAGS);
@@ -1439,5 +1439,10 @@ void ImageDescEditTab::slotApplyChangesToAllVersions()
     d->applyBtn->setEnabled(false);
     d->revertBtn->setEnabled(false);
     d->applyToAllVersionsButton->setEnabled(false);
+}
+
+AddTagsLineEdit* ImageDescEditTab::getNewTagEdit()
+{
+    return d->newTagEdit;
 }
 }  // namespace Digikam

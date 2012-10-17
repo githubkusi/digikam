@@ -71,7 +71,8 @@ public:
     void setItems(const ImageInfoList& infos);
     void populateTags();
     void setFocusToTagsView();
-    void focusNewTagEdit();
+    void setFocusToNewTagEdit();
+    AddTagsLineEdit* getNewTagEdit();
     
 Q_SIGNALS:
 

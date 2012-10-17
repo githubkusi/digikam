@@ -306,14 +306,9 @@ DigikamView::DigikamView(QWidget* parent, DigikamModelCollection* modelCollectio
     setupConnections();
     
     //kusi
-//     setTabOrder(d->stackedview->currentWidget(),d->rightSideBar->imageDescEditTab()->getMyBingo2());
-//     setTabOrder(d->rightSideBar->imageDescEditTab()->getMyBingo2(),d->stackedview->currentWidget());    
-            
-    setTabOrder(d->stackedview->imagePreviewView(),d->rightSideBar->imageDescEditTab()->getMyBingo2());
-    //setTabOrder(d->rightSideBar->imageDescEditTab()->getMyBingo2(),d->stackedview->imagePreviewView());    
-    connect(d->rightSideBar->imageDescEditTab()->getMyBingo2(), SIGNAL(taggingActionFinished()),
+    setTabOrder(d->stackedview->imagePreviewView(),d->rightSideBar->imageDescEditTab()->getNewTagEdit());   
+    connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
             this, SLOT(slotFocusMe()));
-    
 }
 
 DigikamView::~DigikamView()
@@ -828,7 +823,7 @@ void DigikamView::slotAssignTag()
     d->rightSideBar->setActiveTab(imageDescEditTab);
     
     //activate tags tab on properties tab
-    imageDescEditTab->focusNewTagEdit();
+    imageDescEditTab->setFocusToNewTagEdit();
 }
 
 void DigikamView::slotNewKeywordSearch()
@@ -2025,6 +2020,9 @@ void DigikamView::slotFocusMe()
 {
     kDebug() << "enter slot focus me";
     d->stackedview->currentWidget()->setFocus();
+    
+    //select next image, since the user is probably done tagging the current image
+    d->iconView->toNextIndex();
 }
 
 }  // namespace Digikam
