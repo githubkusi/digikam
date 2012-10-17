@@ -822,11 +822,13 @@ void DigikamView::slotEditTag()
 
 void DigikamView::slotAssignTag()
 {
-    //std::cout << "assign tag fired" << std::endl;
-    kDebug() << "kdebug enter slotAssignTag";    
-    AddTagsLineEdit * bla = d->rightSideBar->imageDescEditTab()->getMyBingo2();
-    bla->setText("slotAssignTag bingo2");
-    bla->setFocus(Qt::ShortcutFocusReason);    
+    ImageDescEditTab* imageDescEditTab = d->rightSideBar->imageDescEditTab();
+
+    //activate image properties tab
+    d->rightSideBar->setActiveTab(imageDescEditTab);
+    
+    //activate tags tab on properties tab
+    imageDescEditTab->focusNewTagEdit();
 }
 
 void DigikamView::slotNewKeywordSearch()

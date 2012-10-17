@@ -486,17 +486,12 @@ ImageDescEditTab::~ImageDescEditTab()
     delete d;
 }
 
-SearchTextBar* ImageDescEditTab::getMyBingo()
+void ImageDescEditTab::focusNewTagEdit()
 {
-  return d->tagsSearchBar;
+    //select "Tags" tab and focus the NewTagLineEdit widget
+    d->tabWidget->setCurrentIndex(ImageDescEditTabPriv::TAGS);
+    d->newTagEdit->setFocus();
 }
-
-AddTagsLineEdit * ImageDescEditTab::getMyBingo2()
-{
-  return d->newTagEdit;
-}
-
-
 
 bool ImageDescEditTab::singleSelection() const
 {

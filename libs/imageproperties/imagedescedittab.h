@@ -71,11 +71,8 @@ public:
     void setItems(const ImageInfoList& infos);
     void populateTags();
     void setFocusToTagsView();
+    void focusNewTagEdit();
     
-    //kusi
-    SearchTextBar* getMyBingo();
-    AddTagsLineEdit* getMyBingo2();
-
 Q_SIGNALS:
 
     void progressEntered(const QString&);
