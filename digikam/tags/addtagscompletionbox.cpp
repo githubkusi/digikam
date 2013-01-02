@@ -290,27 +290,39 @@ void AddTagsCompletionBox::setItems(const QString& currentText, const QStringLis
         // If it is the default action, we place the "Create Tag" entry at the top of the list.
         if (createItemUnderParent && createItemUnderParent->action() == defaultAction)
         {
-            addItem(createItemUnderParent);
-            setCurrentItem(createItemUnderParent);
+            //Case A
+            //a tag is currently selected in the listbox, we have the choice of toplevel and underparent for a new tag
+            //the entire text currently written by the user doesn't exist as a tag. However, it might be a part of a tag
+
             foreach(AddTagsCompletionBoxItem* item, assignItems)
             {
                 addItem(item);
             }
+
+            addItem(createItemUnderParent);
             addItem(createItemTopLevel);
+
+            setCurrentRow(0);
         }
         else // if (createItemTopLevel && createItemTopLevel->action() == defaultAction)
         {
-            addItem(createItemTopLevel);
-            setCurrentItem(createItemTopLevel);
+            //Case B
+            //no tag is currently selected in the listbox, only toplevel choice for a new tag
+            //the entire text currently written by the user doesn't exist as a tag. However, it might be a part of a tag
+
             foreach(AddTagsCompletionBoxItem* item, assignItems)
             {
                 addItem(item);
             }
-            addItem(createItemUnderParent);
+            addItem(createItemTopLevel);
+
+            setCurrentRow(0);
         }
     }
     else
     {
+        //Case C
+        //the entire text currently written by the user exists as a tag
         foreach(AddTagsCompletionBoxItem* item, assignItems)
         {
             addItem(item);
@@ -401,9 +413,8 @@ void AddTagsCompletionBox::slotCurrentItemChanged(QListWidgetItem* current, QLis
 {
     if (current)
     {
+        //was fired on each pressed char by user
         AddTagsCompletionBoxItem* boxItem = static_cast<AddTagsCompletionBoxItem*>(current);
-        emit currentCompletionTextChanged(current->data(
-                                              AddTagsCompletionBox::AddTagsCompletionBoxPriv::CompletionTextRole).toString());
         emit currentTaggingActionChanged(boxItem->action());
     }
     else
