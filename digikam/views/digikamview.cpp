@@ -2104,6 +2104,15 @@ void DigikamView::slotFocusAndNextImage()
     d->iconView->toNextIndex();
 }
 
+void DigikamView::slotFocusAndNextImage()
+{
+    //slot is called on pressing "return" a second time after assigning a tag
+    d->stackedview->currentWidget()->setFocus();
+
+    //select next image, since the user is probably done tagging the current image
+    d->iconView->toNextIndex();
+}
+
 void DigikamView::slotImageExifOrientation(int orientation)
 {
     FileActionMngr::instance()->setExifOrientation(selectedInfoList(), orientation);
