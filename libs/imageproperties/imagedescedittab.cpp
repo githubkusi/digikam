@@ -492,7 +492,7 @@ void ImageDescEditTab::writeSettings(KConfigGroup& group)
 void ImageDescEditTab::setFocusToNewTagEdit()
 {
     //select "Tags" tab and focus the NewTagLineEdit widget
-    d->tabWidget->setCurrentIndex(Private::TAGS);
+    d->tabWidget->setCurrentIndex(ImageDescEditTabPriv::TAGS);
     d->newTagEdit->setFocus();
 }
 
