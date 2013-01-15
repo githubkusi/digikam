@@ -49,6 +49,9 @@
 #include "albumthumbnailloader.h"
 #include "albumtreeview.h"
 #include "tagscache.h"
+#include <iostream>
+
+using namespace std;
 
 namespace Digikam
 {
@@ -290,6 +293,7 @@ void AddTagsCompletionBox::setItems(const QString& currentText, const QStringLis
         // If it is the default action, we place the "Create Tag" entry at the top of the list.
         if (createItemUnderParent && createItemUnderParent->action() == defaultAction)
         {
+            cout << "case A" << endl;
             //Case A
             //a tag is currently selected in the listbox, we have the choice of toplevel and underparent for a new tag
             //the entire text currently written by the user doesn't exist as a tag. However, it might be a part of a tag
@@ -310,6 +314,8 @@ void AddTagsCompletionBox::setItems(const QString& currentText, const QStringLis
             //no tag is currently selected in the listbox, only toplevel choice for a new tag
             //the entire text currently written by the user doesn't exist as a tag. However, it might be a part of a tag
 
+
+            cout << "case B" << endl;
             foreach(AddTagsCompletionBoxItem* item, assignItems)
             {
                 addItem(item);
@@ -323,6 +329,8 @@ void AddTagsCompletionBox::setItems(const QString& currentText, const QStringLis
     {
         //Case C
         //the entire text currently written by the user exists as a tag
+
+        cout << "case C" << endl;
         foreach(AddTagsCompletionBoxItem* item, assignItems)
         {
             addItem(item);
