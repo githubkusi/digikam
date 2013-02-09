@@ -160,6 +160,7 @@ public Q_SLOTS:
     void slotEditTag();
     void slotOpenTagsManager();
     void slotAssignTag();
+    void slotApplyTagBuffer();
 
 
     // Search action slots
