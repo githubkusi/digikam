@@ -151,6 +151,7 @@ public Q_SLOTS:
     void slotDeleteTag();
     void slotEditTag();
     void slotAssignTag();
+    void slotApplyTagBuffer();
 
     // Search action slots
     void slotNewKeywordSearch();

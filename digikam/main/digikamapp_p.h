@@ -234,6 +234,8 @@ public:
     KAction*                            deleteTagAction;
     KAction*                            editTagAction;
     KAction*                            assignTagAction;
+    KAction*                            applyTagBufferAction;
+	
 
     // Image Actions
     KSelectAction*                      imageViewSelectionAction;

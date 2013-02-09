@@ -818,6 +818,13 @@ void DigikamView::slotAssignTag()
     imageDescEditTab->setFocusToNewTagEdit();
 }
 
+void DigikamView::slotApplyTagBuffer()
+{
+  //fire event "applyTagBuffer"
+
+}
+
+
 void DigikamView::slotNewKeywordSearch()
 {
     slotLeftSideBarActivate(d->searchSideBar);
