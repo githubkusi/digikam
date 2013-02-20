@@ -149,6 +149,7 @@
 #include "thumbsgenerator.h"
 #include "kipipluginloader.h"
 #include "imagepluginloader.h"
+#include "tagbuffer.h"
 
 #ifdef USE_SCRIPT_IFACE
 #include "scriptiface.h"
@@ -837,9 +838,9 @@ void DigikamApp::setupActions()
     // -----------------------------------------------------------
 
     d->applyTagBufferAction = new KAction(KIcon("tag-apply-buffer"), i18n("Apply Tagbuffer"), this);
-    d->applyTagBufferAction->setShortcut(KShortcut(Qt::Key_Stop));
+    d->applyTagBufferAction->setShortcut(KShortcut(Qt::Key_Period));
     connect(d->applyTagBufferAction, SIGNAL(triggered()), d->view, SLOT(slotApplyTagBuffer()));
-    actionCollection()->addAction("tag_assign", d->applyTagBufferAction);
+    actionCollection()->addAction("tag_apply_buffer", d->applyTagBufferAction);
 
     // -----------------------------------------------------------
 

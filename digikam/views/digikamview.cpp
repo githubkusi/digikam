@@ -78,6 +78,8 @@
 #include "faceiface.h"
 #include "fileactionprogress.h"
 #include "versionmanagersettings.h"
+#include "tagbuffer.h"
+#include "databasewatch.h" //probably not noeeded
 
 #ifdef USE_PRESENTATION_MODE
 #include "qmlshow.h"
@@ -85,7 +87,7 @@
 
 namespace Digikam
 {
-
+    
 class DigikamView::Private
 {
 public:
@@ -121,7 +123,8 @@ public:
         rightSideBar(0),
         filterWidget(0),
         optionAlbumViewPrefix("AlbumView"),
-        modelCollection(0)
+        modelCollection(0),
+        tagBuffer(0)
     {
     }
 
@@ -178,6 +181,7 @@ public:
     QList<SidebarWidget*>         leftSideBarWidgets;
 
     DigikamModelCollection*       modelCollection;
+    TagBuffer*                    tagBuffer;
 };
 
 QString DigikamView::Private::userPresentableAlbumTitle(const QString& title) const
@@ -221,6 +225,8 @@ void DigikamView::Private::addPageUpDownActions(DigikamView* const q, QWidget* c
 }
 
 // -------------------------------------------------------------------------------------------
+
+
 
 DigikamView::DigikamView(QWidget* const parent, DigikamModelCollection* const modelCollection)
     : KHBox(parent), d(new Private)
@@ -347,12 +353,16 @@ DigikamView::DigikamView(QWidget* const parent, DigikamModelCollection* const mo
     d->thumbSizeTimer->setInterval(300);
 
     d->albumHistory = new AlbumHistory();
+    
+    //tagbuffer
+    d->tagBuffer = new TagBuffer();
 
     slotSidebarTabTitleStyleChanged();
     setupConnections();
 
     connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
             this, SLOT(slotFocusAndNextImage()));
+    
 }
 
 DigikamView::~DigikamView()
@@ -360,6 +370,7 @@ DigikamView::~DigikamView()
     saveViewState();
 
     delete d->albumHistory;
+    //delete d->tagBuffer;
     delete d;
 }
 
@@ -610,6 +621,32 @@ void DigikamView::setupConnections()
 
     connect(d->rightSideBar->getFiltersHistoryTab(), SIGNAL(actionTriggered(ImageInfo)),
             this, SLOT(slotGotoAlbumAndItem(ImageInfo)));
+    
+    // -- Tag Buffer --------------------
+    
+    //tagbuffer events
+//     connect(d->iconView, SIGNAL(selectionChanged()),
+//            d->tagBuffer, SLOT(slotEventSelectPicture()));
+    
+    //selected only fires on new items selecte (not on deselection)
+    connect(d->iconView, SIGNAL(selected(QList<ImageInfo>)),
+            d->tagBuffer, SLOT(slotEventSelectPicture()));
+    
+//     connect(FileActionMngr::instance(), SIGNAL(signalAssignTags()),
+//             d->tagBuffer, SLOT(slotEventTagging()));
+    
+//     //doesnt work
+//     connect(TagsCache::instance(), SIGNAL(tagAdded(int)),
+//             d->tagBuffer, SLOT(slotEventTagging()));    
+    
+    connect(DatabaseAccess::databaseWatch(), SIGNAL(imageTagChange(ImageTagChangeset)),
+            d->tagBuffer, SLOT(slotEventTagging(ImageTagChangeset)));
+//            Qt::DirectConnection);
+    
+    //tagbuffer actions
+    connect(d->tagBuffer, SIGNAL(signalNextItem()),
+            this, SLOT(slotNextItem()));
+    
 }
 
 void DigikamView::connectIconViewFilter(FilterStatusBar* const filterbar)
@@ -820,8 +857,7 @@ void DigikamView::slotAssignTag()
 
 void DigikamView::slotApplyTagBuffer()
 {
-  //fire event "applyTagBuffer"
-
+    d->tagBuffer->eventFired(TagBuffer::eventApplyTagBuffer);
 }
 
 
