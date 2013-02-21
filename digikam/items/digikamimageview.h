@@ -68,6 +68,7 @@ public Q_SLOTS:
     void deleteSelected(bool permanently = false);
     void deleteSelectedDirectly(bool permanently = false);
     void assignTagToSelected(int tagID);
+    void assignTagsToSelected(QList<int> tagIDs);
     void removeTagFromSelected(int tagID);
     void assignPickLabelToSelected(int pickId);
     void assignColorLabelToSelected(int colorId);

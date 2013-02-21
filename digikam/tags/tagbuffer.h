@@ -66,10 +66,13 @@ public Q_SLOTS:
     
 Q_SIGNALS:
     void signalNextItem();
+    void signalApplyBuffer(QList<int>);
     
 protected:
        
     State state;
+    
+    //events
     void e11b();    
     void e11a();
     void e12();
@@ -79,8 +82,9 @@ protected:
     void e31();
     void e32();
     void e33();
+    
+    //actions
     void applyBuffer();
-    void selectNextPicture();
         
     QSet<int> tagBuffer;    //tagIds of 
     QSet<int> curTagBuffer; //tagIds which belong to current commit to database
