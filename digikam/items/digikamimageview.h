@@ -61,6 +61,7 @@ public Q_SLOTS:
     void deleteSelected(const ImageViewUtilities::DeleteMode deleteMode = ImageViewUtilities::DeleteUseTrash);
     void deleteSelectedDirectly(const ImageViewUtilities::DeleteMode deleteMode = ImageViewUtilities::DeleteUseTrash);
     void assignTagToSelected(int tagID);
+    void assignTagsToSelected(QList<int> tagIDs);
     void removeTagFromSelected(int tagID);
     void assignPickLabelToSelected(int pickId);
     void assignColorLabelToSelected(int colorId);

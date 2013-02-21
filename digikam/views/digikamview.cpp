@@ -677,9 +677,11 @@ void DigikamView::setupConnections()
 //            Qt::DirectConnection);
     
     //tagbuffer actions
-    connect(d->tagBuffer, SIGNAL(signalNextItem()),
-            this, SLOT(slotNextItem()));
+    connect(d->tagBuffer, SIGNAL(signalApplyBuffer(QList<int>)),
+            d->iconView, SLOT(assignTagsToSelected(QList<int>)));
     
+    connect(d->tagBuffer, SIGNAL(signalNextItem()),
+            this, SLOT(slotNextItem());
 }
 
 void DigikamView::connectIconViewFilter(FilterStatusBar* const filterbar)

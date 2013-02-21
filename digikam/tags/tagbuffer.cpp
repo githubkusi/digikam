@@ -85,8 +85,8 @@ void TagBuffer::e11a()
 void TagBuffer::e11b()
 {
     cout << "e11b" << endl;
+    applyBuffer();
     emit signalNextItem();
-//    selectNextPicture();
 }
 
 void TagBuffer::e12()
@@ -123,6 +123,8 @@ void TagBuffer::e22()
 void TagBuffer::e23()
 {
     cout << "e23" << endl;
+    emit signalNextItem();
+    applyBuffer();
 }
 
 
@@ -138,17 +140,15 @@ void TagBuffer::e32()
 void TagBuffer::e33()
 {
     cout << "e33" << endl;
+    emit signalNextItem();
+    applyBuffer();
 }
 //------actions--------------------------------------
 
 void TagBuffer::applyBuffer()
 {
-    cout << "apply buffer" << endl;
-}
-
-void TagBuffer::selectNextPicture()
-{
-    cout << "selectNextPicture" << endl;
+    cout << "apply buffer: " << tagBuffer.count() << "tags" << endl;
+    emit signalApplyBuffer(tagBuffer);
 }
 
 //------event mapping
