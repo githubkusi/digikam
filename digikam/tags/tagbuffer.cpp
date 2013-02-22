@@ -37,10 +37,13 @@ using namespace std;
 namespace Digikam
 {
     
-// TagBuffer::tagbuffer() {
-//     state = state::stateapplybuffertonext;
-// }   
-    
+TagBuffer::TagBuffer()
+{
+    lockTagEvent = false;
+    lockSelectEvent = false;
+    state = stateApplyBufferToCurrent;        
+}
+
 void TagBuffer::eventFired(Event e)
 {
     switch(state)
@@ -86,7 +89,8 @@ void TagBuffer::e11b()
 {
     cout << "e11b" << endl;
     applyBuffer();
-    emit signalNextItem();
+    nextImage();
+    cout << "exit e11b" << endl;
 }
 
 void TagBuffer::e12()
@@ -123,8 +127,9 @@ void TagBuffer::e22()
 void TagBuffer::e23()
 {
     cout << "e23" << endl;
-    emit signalNextItem();
+    nextImage();
     applyBuffer();
+    cout << "exit e23" << endl;
 }
 
 
@@ -138,91 +143,107 @@ void TagBuffer::e32()
 }
 
 void TagBuffer::e33()
-{
+{    
     cout << "e33" << endl;
-    emit signalNextItem();
+    
+    nextImage();
     applyBuffer();
 }
 //------actions--------------------------------------
 
 void TagBuffer::applyBuffer()
 {
-    cout << "apply buffer: " << tagBuffer.count() << "tags" << endl;
-    emit signalApplyBuffer(tagBuffer);
+    cout << "apply buffer: " << tagBuffer.count() << " tags" << endl;
+    
+    lockTagEvent = tagBuffer.count();
+    emit signalApplyBuffer(tagBuffer.toList());
 }
+
+void TagBuffer::nextImage()
+{
+    lockSelectEvent = 1;
+    emit signalNextItem();
+}
+
 
 //------event mapping
 void TagBuffer::slotEventSelectPicture()
 {
+    
+    if (lockSelectEvent)
+    {
+        lockSelectEvent=0;
+        return;
+    }
+        
     eventFired(eventSelectPicture);
 }
 
+void kusiDispChangeset(ImageTagChangeset changeset)
+{
+//     cout << "operation: " << changeset.operation() << endl;
+//     cout << "#images: " << changeset.ids().count() << endl;
+    
+    cout << "images in changeset: ";
+    for(int i=0;i<changeset.ids().count();i++)
+    {
+        cout << changeset.ids().at(i) << ", ";
+    }
+    cout << endl;
+}
+
+
 void TagBuffer::slotEventTagging(ImageTagChangeset changeset)
 {   
+    
+    
+//     kusiDispChangeset(changeset);
     TagsCache * tc = TagsCache::instance();
     
     curTagId = emptyTag;
     
-    if (false && (changeset.operation()==ImageTagChangeset::Added || changeset.operation()==ImageTagChangeset::Removed))
+    if (changeset.operation()==ImageTagChangeset::Added)
     {
-        cout << "images: ";
-        for (int i=0;i<changeset.ids().count();i++)        
+        
+
+        
+        
+        //Our own signalApplyBuffer will call again this function. Filter this case 
+        //emitting our own signal is apparently not blocking
+//         static QList<qlonglong> previousImageIds;
+//         if (changeset.ids() == previousImageIds)
+//         {
+//             cout << "receive our own tagging signal, exit" << endl;
+//             return;
+//         }
+        
+        QList<int> t = tc->publicTags(changeset.tags());
+        
+        //if this doesn't hold true, we need to declare curTagId as QList instead of string
+        Q_ASSERT(t.count()<=1);
+        
+        for(int i=0;i<t.count();i++)
         {
-            cout << changeset.ids().at(i);
+            curTagId = t.at(i);
         }
-        cout << endl;
         
-        if (changeset.operation()==ImageTagChangeset::Added)
-            cout << "added:";
-        else
-            cout << "removed:";
-        
-        for(int i=0;i<changeset.tags().count();i++)
+        if (curTagId != emptyTag) //curTagId is empty if a internal tag was applied
         {
-            int tagId = changeset.tags().at(i);
-            cout << " " << tagId;
-            if (tc->isInternalTag(tagId))
-            {
-                cout << "(internaltag) ";
-            }
-            else
-            {
-                //the real thing of this fcn
-                curTagId = tagId;
-            }
-        }
-        cout << endl;
-        
-        cout << "slotEventTagging" << endl;
-        eventFired(eventTagging);
-    }
-    else
-    {
-        //non-debug code
-        if (changeset.operation()==ImageTagChangeset::Added)
-        {
-            QList<int> t = tc->publicTags(changeset.tags());
+            kusiDispChangeset(changeset);
             
-            //if this doesn't hold true, we need to declare curTagId as QList instead of string
-            Q_ASSERT(t.count()<=1);
-            
-            for(int i=0;i<t.count();i++)
+            //don't react on our own select action
+            if (lockTagEvent)
             {
-                curTagId = t.at(i);
+                //This is our own event since the lock is set. Release lock to be
+                //ready for a real tagEvent
+                cout << "caught our own tag, skip. " << lockTagEvent << " to go" << endl;
+                lockTagEvent--;
+                return;
             }
             
-            if (curTagId != emptyTag)
-                eventFired(eventTagging);
+            eventFired(eventTagging);
         }
     }
-    
-}
-
-
-TagBuffer::TagBuffer()
-{
-    //initial state
-    state = stateApplyBufferToCurrent;        
 }
 
 

@@ -85,6 +85,11 @@ protected:
     
     //actions
     void applyBuffer();
+    void nextImage();
+    
+    //lock
+    unsigned int lockTagEvent;
+    unsigned int lockSelectEvent;
         
     QSet<int> tagBuffer;    //tagIds of 
     QSet<int> curTagBuffer; //tagIds which belong to current commit to database
@@ -92,7 +97,7 @@ protected:
                              
     QList<int> curTaggedImages; //tag signal emits
     int curTagId;
-    const int emptyTag = -1;
+    static const int emptyTag = -1;
    
 };
 
