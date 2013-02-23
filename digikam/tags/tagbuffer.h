@@ -44,14 +44,18 @@ public:
     {
         eventSelectPicture,
         eventTagging,
-        eventApplyTagBuffer
+        eventApplyTagBuffer,
+        eventTaggedAndNext    //on pressing double-enter in addtagslineedit, eventSelectPicture is
+                               //fired before eventTagging. However, tagging comes BEFORE select.
+                               //Therefore we need to bundle the two events for that special case
     };
     
     enum State
     {
-        stateApplyBufferToCurrent,
+        stateApplyBufferToCurrent=1,
         stateChangeBuffer,
-        stateApplyBufferToNext
+        stateApplyBufferToNext,
+        stateWaitForTag
     };
     
     TagBuffer();
@@ -63,6 +67,7 @@ public:
 public Q_SLOTS:
     void slotEventSelectPicture();
     void slotEventTagging(ImageTagChangeset);
+    void slotTaggedAndNext();
     
 Q_SIGNALS:
     void signalNextItem();
@@ -75,6 +80,7 @@ protected:
     //events
     void e11b();    
     void e11a();
+    void e11c();
     void e12();
     void e21();
     void e22();
@@ -82,10 +88,13 @@ protected:
     void e31();
     void e32();
     void e33();
+    void e14();
+    void e41();
     
     //actions
     void applyBuffer();
     void nextImage();
+    void currentTagToNewBuffer();
     
     //lock
     unsigned int lockTagEvent;

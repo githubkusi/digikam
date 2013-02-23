@@ -365,9 +365,6 @@ DigikamView::DigikamView(QWidget* const parent, DigikamModelCollection* const mo
     slotSidebarTabTitleStyleChanged();
     setupConnections();
 
-    connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
-            this, SLOT(slotFocusAndNextImage()));
-
     connect(d->rightSideBar, SIGNAL(signalSetupMetadataFilters(int)),
             this, SLOT(slotSetupMetadataFilters(int)));
 }
@@ -655,26 +652,22 @@ void DigikamView::setupConnections()
     connect(d->rightSideBar->getFiltersHistoryTab(), SIGNAL(actionTriggered(ImageInfo)),
             this, SLOT(slotGotoAlbumAndItem(ImageInfo)));
     
+
+    // -- Tagging
+    connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
+            this, SLOT(slotFocusAndNextImage()));
+    
+    
     // -- Tag Buffer --------------------
     
     //tagbuffer events
-//     connect(d->iconView, SIGNAL(selectionChanged()),
-//            d->tagBuffer, SLOT(slotEventSelectPicture()));
-    
     //selected only fires on new items selecte (not on deselection)
     connect(d->iconView, SIGNAL(selected(QList<ImageInfo>)),
             d->tagBuffer, SLOT(slotEventSelectPicture()));
     
-//     connect(FileActionMngr::instance(), SIGNAL(signalAssignTags()),
-//             d->tagBuffer, SLOT(slotEventTagging()));
-    
-//     //doesnt work
-//     connect(TagsCache::instance(), SIGNAL(tagAdded(int)),
-//             d->tagBuffer, SLOT(slotEventTagging()));    
-    
     connect(DatabaseAccess::databaseWatch(), SIGNAL(imageTagChange(ImageTagChangeset)),
             d->tagBuffer, SLOT(slotEventTagging(ImageTagChangeset)));
-//            Qt::DirectConnection);
+    
     
     //tagbuffer actions
     connect(d->tagBuffer, SIGNAL(signalApplyBuffer(QList<int>)),
@@ -682,6 +675,9 @@ void DigikamView::setupConnections()
     
     connect(d->tagBuffer, SIGNAL(signalNextItem()),
             this, SLOT(slotNextItem()));
+    
+    connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
+            d->tagBuffer, SLOT(slotTaggedAndNext()));
 }
 
 void DigikamView::connectIconViewFilter(FilterStatusBar* const filterbar)
@@ -2155,6 +2151,8 @@ void DigikamView::slotFocusAndNextImage()
 
     //select next image, since the user is probably done tagging the current image
     d->iconView->toNextIndex();
+    
+//     emit 
 }
 
 void DigikamView::slotImageExifOrientation(int orientation)

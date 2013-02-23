@@ -26,6 +26,9 @@
 #include <iostream>
 #include <boost/graph/graph_concepts.hpp>
 
+//kde includes
+#include <kdebug.h>
+
 // digikam includes
 #include "databasechangesets.h"
 #include "tagscache.h"
@@ -46,6 +49,8 @@ TagBuffer::TagBuffer()
 
 void TagBuffer::eventFired(Event e)
 {
+    State oldState = state;
+    
     switch(state)
     {
         case stateApplyBufferToCurrent:
@@ -53,7 +58,8 @@ void TagBuffer::eventFired(Event e)
             {
                 case eventApplyTagBuffer: e11b();break;
                 case eventSelectPicture:  e11a();break;
-                case eventTagging:        e12();state=stateChangeBuffer;;
+                case eventTagging:        e12();state=stateChangeBuffer;break;
+                case eventTaggedAndNext:  e14();state=stateWaitForTag;break;
             }            
             break;
             
@@ -63,6 +69,7 @@ void TagBuffer::eventFired(Event e)
                 case eventSelectPicture:  e21();state=stateApplyBufferToCurrent;break;
                 case eventApplyTagBuffer: e23();state=stateApplyBufferToNext;break;
                 case eventTagging:        e22();break;
+                default:kError() << "not possible according to state machine";
             }
             break;
             
@@ -72,9 +79,20 @@ void TagBuffer::eventFired(Event e)
                 case eventSelectPicture:  e31();state=stateApplyBufferToCurrent;break;
                 case eventApplyTagBuffer: e33();break;
                 case eventTagging:        e32();state=stateChangeBuffer;break;
+                default:kError() << "not possible according to state machine";
             }
             break;
-    }    
+            
+        case stateWaitForTag:
+            switch (e)
+            {
+                case eventTagging: e41();state=stateApplyBufferToCurrent;break;
+                default:kError() << "not possible according to state machine";
+            }
+    }
+    
+    if (oldState != state)
+        cout << "new state " << state << endl;
 }
 
 //------events-------------------------------------
@@ -93,14 +111,37 @@ void TagBuffer::e11b()
     cout << "exit e11b" << endl;
 }
 
+void TagBuffer::e11c()
+{
+    //shortcut of state1:e12->state2:e21->state1
+    //tagging event will follow AFTER this event
+    cout << "e11c" << endl;
+    currentTagToNewBuffer();
+    lockTagEvent = tagBuffer.count();
+    getTagBufferString();
+}
+
+void TagBuffer::e14()
+{
+    cout << "e14" << endl;
+    
+   
+
+}
+
+void TagBuffer::e41()
+{
+    cout << "e41" << endl;
+    currentTagToNewBuffer();
+    getTagBufferString();
+}
+
+
 void TagBuffer::e12()
 {
     cout << "e12" << endl;
-    tagBuffer.clear();
     
-    if (curTagId != emptyTag)
-        tagBuffer.insert(curTagId);
-    
+    currentTagToNewBuffer();
     getTagBufferString();
 }
 
@@ -136,10 +177,7 @@ void TagBuffer::e23()
 void TagBuffer::e32()
 {
     cout << "e32" << endl;
-    
-    tagBuffer.clear();    
-    if (curTagId != emptyTag)
-        tagBuffer.insert(curTagId);    
+    currentTagToNewBuffer();
 }
 
 void TagBuffer::e33()
@@ -163,6 +201,13 @@ void TagBuffer::nextImage()
 {
     lockSelectEvent = 1;
     emit signalNextItem();
+}
+
+void TagBuffer::currentTagToNewBuffer()
+{
+    tagBuffer.clear();    
+    if (curTagId != emptyTag)
+        tagBuffer.insert(curTagId);      
 }
 
 
@@ -229,6 +274,7 @@ void TagBuffer::slotEventTagging(ImageTagChangeset changeset)
         
         if (curTagId != emptyTag) //curTagId is empty if a internal tag was applied
         {
+            cout << "valid tagging event recieved" << endl;
             kusiDispChangeset(changeset);
             
             //don't react on our own select action
@@ -244,6 +290,14 @@ void TagBuffer::slotEventTagging(ImageTagChangeset changeset)
             eventFired(eventTagging);
         }
     }
+}
+
+void TagBuffer::slotTaggedAndNext()
+{
+    cout << "taggedAndNext" << endl;
+    //tagging event will follow only after eventTaggedAndNext. Since the logical order is not
+    //preserved, omit the following tagging event and take care here
+    eventFired(eventTaggedAndNext);
 }
 
 
