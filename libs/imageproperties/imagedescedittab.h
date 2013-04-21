@@ -69,6 +69,7 @@ public:
     void populateTags();
     void setFocusToTagsView();
     void setFocusToNewTagEdit();
+    void getNewlyAddedTags();
     AddTagsLineEdit* getNewTagEdit();
 
     void readSettings(KConfigGroup& group);

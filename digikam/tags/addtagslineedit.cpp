@@ -391,6 +391,7 @@ void AddTagsLineEdit::slotReturnPressed(const QString& text)
 {
     if (text.isEmpty())
     {
+        
       //focus back to mainview
       emit taggingActionFinished();
       return;
@@ -406,6 +407,11 @@ void AddTagsLineEdit::slotTextChanged(const QString& text)
     {
         setCurrentTaggingAction(TaggingAction());
     }
+    else if (text==".")
+    {
+        emit signalApplyTagsToNext();
+    }
+        
     // for cases like copy+paste where autocompletion does not activate
     else if (!d->currentTaggingAction.isValid())
     {

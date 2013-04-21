@@ -46,6 +46,10 @@
 #include "metadatasettings.h"
 #include "thumbnailloadthread.h"
 
+// kusi
+#include <iostream>
+using namespace std;
+
 namespace Digikam
 {
 
@@ -233,7 +237,7 @@ void FileActionMngr::ungroup(const QList<ImageInfo>& infos)
 }
 
 void FileActionMngr::setExifOrientation(const QList<ImageInfo>& infos, int orientation)
-{
+{         
     FileActionImageInfoList taskList = FileActionImageInfoList::create(infos);
     taskList.schedulingForDB(i18n("Updating orientation in database"), d->dbProgressCreator());
     d->setExifOrientation(taskList, orientation);
@@ -241,6 +245,9 @@ void FileActionMngr::setExifOrientation(const QList<ImageInfo>& infos, int orien
 
 void FileActionMngr::applyMetadata(const QList<ImageInfo>& infos, const MetadataHub& hub)
 {
+    //kusi
+    cout << "FileActionMngr::applyMetadata1: imageinfo.count=" << infos.count() << " tagids=" << infos.first().tagIds().first() << endl;
+    
     FileActionImageInfoList taskList = FileActionImageInfoList::create(infos);
     taskList.schedulingForDB(i18n("Applying metadata"), d->dbProgressCreator());
     // create hub parent-less, we will need to clone() it in a thread,
@@ -250,6 +257,8 @@ void FileActionMngr::applyMetadata(const QList<ImageInfo>& infos, const Metadata
 
 void FileActionMngr::applyMetadata(const QList<ImageInfo>& infos, const MetadataHubOnTheRoad& hub)
 {
+    //kusi
+    cout << "FileActionMngr::applyMetadata2: imageinfo.count=" << infos.count() << " tagids=" << infos.first().tagIds().first() << endl;    
     FileActionImageInfoList taskList = FileActionImageInfoList::create(infos);
     taskList.schedulingForDB(i18n("Applying metadata"), d->dbProgressCreator());
     d->applyMetadata(taskList, new MetadataHubOnTheRoad(hub));
@@ -257,6 +266,8 @@ void FileActionMngr::applyMetadata(const QList<ImageInfo>& infos, const Metadata
 
 void FileActionMngr::applyMetadata(const QList<ImageInfo>& infos, MetadataHubOnTheRoad* hub)
 {
+        //kusi
+    cout << "FileActionMngr::applyMetadata3: imageinfo.count=" << infos.count() << " tagids=" << infos.first().tagIds().first() << endl;
     if (hub->parent())
     {
         kDebug() << "MetadataHubOnTheRoad object must not have a QObject parent";

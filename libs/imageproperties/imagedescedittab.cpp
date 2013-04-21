@@ -48,6 +48,9 @@
 #include <ktabwidget.h>
 #include <kpushbutton.h>
 #include <kdebug.h>
+#include <iostream>
+
+using namespace std;
 
 // Libkexiv2 includes
 
@@ -85,6 +88,7 @@
 #include "tagsmanager.h"
 #include "searchtextbar.h"
 #include "addtagslineedit.h"
+#include "metadatahub.h"
 
 namespace Digikam
 {
@@ -691,8 +695,53 @@ void ImageDescEditTab::reset()
     d->applyToAllVersionsButton->setEnabled(false);
 }
 
+
+void ImageDescEditTab::getNewlyAddedTags()
+{
+  //beginkusi1
+    cout << "imageinfo.count=" << d->currInfos.count();
+    ImageInfo info = d->currInfos.first(); //first image if several are selected
+    
+
+    if (!info.isNull())
+    {
+        MetadataHub hub;
+        hub.load(info);
+        QMap<int, MetadataHub::TagStatus> q =hub.tags();        
+        
+        QMap<int, MetadataHub::TagStatus>::iterator m;
+        
+//        cout << "imageinfo: " << info.
+        
+//         for(auto e : q.toStdMap())
+//         {
+//             cout << e.first << "," << e.second << endl;
+//         }
+        
+        for(m=q.begin();m!=q.end();++m)
+        {
+            MetadataHub::TagStatus t = m.value();            
+            cout << "key=" << m.key() << "  hasTag=" << t.hasTag << " status=" << t.status << endl;
+            
+        }
+        
+        
+        QStringList sl = hub.keywords();
+        cout << "metadatahub.keywords: ";
+        for(int i=0;i<sl.count();i++)
+        {
+            QString s=sl.at(i);            
+            cout << s.toLatin1().data() << ", ";            
+        }
+        cout << endl;
+        
+    }
+    //endkusi1     
+}
+
 void ImageDescEditTab::slotApplyAllChanges()
 {
+    
     if (!d->modified)
     {
         return;
@@ -702,9 +751,14 @@ void ImageDescEditTab::slotApplyAllChanges()
     {
         return;
     }
-
+    
+    //begin kusi
+    getNewlyAddedTags();
+    //end kusi
     FileActionMngr::instance()->applyMetadata(d->currInfos, d->hub);
+    getNewlyAddedTags();
     reset();
+    
 }
 
 void ImageDescEditTab::slotRevertAllChanges()
@@ -1458,7 +1512,7 @@ void ImageDescEditTab::slotApplyChangesToAllVersions()
     {
         return;
     }
-
+    
     QSet<qlonglong>                     tmpSet;
     QList<QPair<qlonglong, qlonglong> > relations;
 

@@ -30,6 +30,10 @@
 
 // Qt includes
 
+#include <iostream>
+
+using namespace std;
+
 #include <QShortcut>
 
 // KDE includes
@@ -1342,7 +1346,7 @@ void DigikamView::slotDispatchImageSelected()
         else
         {
             d->rightSideBar->itemChanged(list);
-
+//             cout << "dipatcher: tagidcount=" << allImages.first().tagIds().count()<< endl;
             ImageInfo previousInfo;
             ImageInfo nextInfo;
 
@@ -2137,6 +2141,14 @@ bool DigikamView::hasCurrentItem() const
 
 void DigikamView::slotFocusAndNextImage()
 {
+    
+//     d->rightSideBar->imageDescEditTab()->
+    TagsCache *t=TagsCache::instance();
+    QList<int> i=t->publicTags(d->iconView->selectedImageInfosCurrentFirst().first().tagIds());
+    
+    
+    cout << "slotFocusAndNextImage tagcount=" <<  i.count() << endl;
+    
     //slot is called on pressing "return" a second time after assigning a tag
     d->stackedview->currentWidget()->setFocus();
 
