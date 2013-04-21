@@ -3093,7 +3093,7 @@ void AlbumDB::addItemTag(qlonglong imageID, int tagID)
     //move current tag to front
     d->recentlyAssignedTags.removeAll(tagID);
     d->recentlyAssignedTags.push_front(tagID);
-    if (d->recentlyAssignedTags.size() > 10)
+    if (d->recentlyAssignedTags.size() > 200)
     {
         d->recentlyAssignedTags.pop_back();
     }

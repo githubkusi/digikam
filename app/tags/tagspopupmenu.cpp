@@ -525,10 +525,13 @@ void TagsPopupMenu::slotAboutToShow()
         {
             addTitle(d->recentTagPix, i18n("Recently Assigned Tags"));
 
-            for (AlbumList::const_iterator it = recentTags.constBegin();
-                 it != recentTags.constEnd(); ++it)
+            for(int i=0;i<recentTags.count();i++)            
             {
-                TAlbum* album = static_cast<TAlbum*>(*it);
+                //don't show more than 10 recent tags
+                if (i>=10)
+                    break;
+                
+                TAlbum* album = static_cast<TAlbum*>(recentTags.at(i));
 
                 if (album)
                 {
