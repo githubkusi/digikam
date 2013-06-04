@@ -276,6 +276,7 @@ public:
     KToggleAction*                      recurseTagsAction;
     KToggleAction*                      showBarAction;
     KToggleAction*                      showMenuBarAction;
+    KAction*                            filterAction;
 
     // Tools Actions
     KActionMenu*                        slideShowAction;
@@ -321,6 +322,7 @@ public:
     KComboBox*                          mapViewSwitcher;
 
     DigikamModelCollection*             modelCollection;
+    
 };
 
 }  // namespace Digikam

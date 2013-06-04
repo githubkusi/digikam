@@ -810,6 +810,12 @@ void DigikamApp::setupActions()
 
     // -----------------------------------------------------------
 
+    d->filterAction = new KAction(KIcon("filtering"), i18n("filtering"), this);
+    connect(d->filterAction, SIGNAL(triggered()), d->view, SLOT(slotFiltering()));
+    actionCollection()->addAction("filtering", d->filterAction);
+
+    // -----------------------------------------------------------
+
     d->browseTagsAction = new KAction(KIcon("tag"), i18n("Browse Tags..."), this);
     connect(d->browseTagsAction, SIGNAL(triggered()), d->view, SLOT(slotLeftSideBarActivateTags()));
     actionCollection()->addAction("browse_tag_long", d->browseTagsAction);

@@ -208,6 +208,7 @@ public Q_SLOTS:
     void slotLeftSideBarActivate(SidebarWidget* widget);
     void slotLeftSideBarActivateAlbums();
     void slotLeftSideBarActivateTags();
+    void slotFiltering();
 
     void slotFocusAndNextImage();
 
