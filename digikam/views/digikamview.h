@@ -212,6 +212,8 @@ public Q_SLOTS:
 
     void slotFocusAndNextImage();
 
+    void slotFocusAndNextImage();
+
 #ifdef USE_PRESENTATION_MODE
     void slotSlideShowQml();
 #endif // USE_PRESENTATION_MODE

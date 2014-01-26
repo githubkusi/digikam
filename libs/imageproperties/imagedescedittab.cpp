@@ -1560,4 +1560,8 @@ AddTagsLineEdit* ImageDescEditTab::getNewTagEdit()
     return d->newTagEdit;
 }
 
+AddTagsLineEdit* ImageDescEditTab::getNewTagEdit()
+{
+    return d->newTagEdit;
+}
 }  // namespace Digikam

@@ -553,6 +553,11 @@ void DigikamImageView::assignTagsToSelected(QList<int> tagIDs)
     FileActionMngr::instance()->assignTags(selectedImageInfos(), tagIDs); 
 }
 
+void DigikamImageView::assignTagsToSelected(QList<int> tagIDs)
+{
+    FileActionMngr::instance()->assignTags(selectedImageInfos(), tagIDs); 
+}
+
 void DigikamImageView::removeTagFromSelected(int tagID)
 {
     FileActionMngr::instance()->removeTags(selectedImageInfos(), QList<int>() << tagID);

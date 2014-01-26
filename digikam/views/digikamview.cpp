@@ -93,7 +93,7 @@ using namespace std;
 
 namespace Digikam
 {
-
+    
 class DigikamView::Private
 {
 public:
@@ -371,6 +371,9 @@ DigikamView::DigikamView(QWidget* const parent, DigikamModelCollection* const mo
 
     connect(d->rightSideBar, SIGNAL(signalSetupMetadataFilters(int)),
             this, SLOT(slotSetupMetadataFilters(int)));
+    connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
+            this, SLOT(slotFocusAndNextImage()));
+    
 }
 
 DigikamView::~DigikamView()
@@ -682,6 +685,7 @@ void DigikamView::setupConnections()
     
     connect(d->rightSideBar->imageDescEditTab()->getNewTagEdit(), SIGNAL(taggingActionFinished()),
             d->tagBuffer, SLOT(slotTaggedAndNext()));
+            this, SLOT(slotNextItem());
 }
 
 void DigikamView::connectIconViewFilter(FilterStatusBar* const filterbar)
