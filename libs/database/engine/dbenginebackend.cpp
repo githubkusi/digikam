@@ -45,6 +45,9 @@
 #include "digikam_debug.h"
 #include "dbengineactiontype.h"
 
+// kusi
+#include <iostream>
+
 namespace Digikam
 {
 
@@ -1400,7 +1403,12 @@ bool BdEngineBackend::exec(DbEngineSqlQuery& query)
             }
         }
     }
+    
+    std::cout << "kusi: queryExecuted=" << query.executedQuery().toStdString() << std::endl;
 
+    qCDebug(DIGIKAM_DBENGINE_LOG) << "kusi: Bound values: " << query.boundValues().values();    
+
+    
     return true;
 }
 

@@ -362,6 +362,8 @@ QByteArray DImgLoader::uniqueHashV2(const QString& filePath, const DImg* const i
         const_cast<DImg*>(img)->setAttribute(QString::fromUtf8("uniqueHashV2"), hash);
     }
 
+    qDebug() << "kusi: hash v2=" << hash;
+    
     return hash;
 }
 
@@ -411,6 +413,7 @@ QByteArray DImgLoader::uniqueHash(const QString& filePath, const DImg& img, bool
         const_cast<DImg&>(img).setAttribute(QLatin1String("uniqueHash"), hash);
     }
 
+    qDebug() << "kusi: hash v1=" << hash;
     return hash;
 }
 

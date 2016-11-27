@@ -1574,21 +1574,39 @@ void ImageScanner::loadFromDisk()
 
 QString ImageScanner::uniqueHash() const
 {
+    QString s, t;
+    
     // the QByteArray is an ASCII hex string
     if (d->scanInfo.category == DatabaseItem::Image)
     {
         if (CoreDbAccess().db()->isUniqueHashV2())
-            return QString::fromUtf8(d->img.getUniqueHashV2());
+        {
+            t = QString::fromLatin1("img, uniqueHashV2");
+            s = QString::fromUtf8(d->img.getUniqueHashV2());
+        }
         else
-            return QString::fromUtf8(d->img.getUniqueHash());
+        {
+            t = QString::fromLatin1("img, uniqueHash");
+            s = QString::fromUtf8(d->img.getUniqueHash());
+        }
     }
     else
     {
         if (CoreDbAccess().db()->isUniqueHashV2())
-            return QString::fromUtf8(DImg::getUniqueHashV2(d->fileInfo.filePath()));
+        {
+            t = QString::fromLatin1("non-img, uniqueHashV2");
+            s = QString::fromUtf8(DImg::getUniqueHashV2(d->fileInfo.filePath()));
+        }
         else
-            return QString::fromUtf8(DImg::getUniqueHash(d->fileInfo.filePath()));
+        {
+            t = QString::fromLatin1("non-img, uniqueHashV2");
+            s = QString::fromUtf8(DImg::getUniqueHash(d->fileInfo.filePath()));
+        }
     }
+    
+    qDebug() << "kusi:uniqueHash:  " << t << " hash=" << s;
+    
+    return s;
 }
 
 QString ImageScanner::detectImageFormat() const
