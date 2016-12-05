@@ -215,11 +215,13 @@ void SetupDatabase::upgradeUniqueHashes()
                                             "<i>After the upgrade you cannot use your database with a digiKam version "
                                             "prior to 2.0.</i></p> "
                                             "<p>Do you want to begin the update?</p>"));
+    qDebug() << "kusi: result=" << result;
+    
 
-    if (result == QMessageBox::Yes)
-    {
+//     if (result == QMessageBox::Yes)
+//     {
         ScanController::instance()->updateUniqueHash();
-    }
+//     }
 }
 
 void SetupDatabase::showHashInformation()
