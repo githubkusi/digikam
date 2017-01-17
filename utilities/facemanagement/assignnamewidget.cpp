@@ -46,6 +46,7 @@
 #include "dimg.h"
 #include "imageinfo.h"
 #include "thememanager.h"
+#include "applicationsettings.h"
 
 namespace Digikam
 {
@@ -551,6 +552,17 @@ void AssignNameWidget::setDefaultModel()
 
 void AssignNameWidget::setModel(TagModel* const model, TagPropertiesFilterModel* const filteredModel, CheckableAlbumFilterModel* const filterModel)
 {
+    // Restrict the tag properties filter model to people if configured.
+    ApplicationSettings* const settings = ApplicationSettings::instance();
+
+    if (settings)
+    {
+        if (settings->showOnlyPersonTagsInPeopleSidebar())
+        {
+            filteredModel->listOnlyTagsWithProperty(TagPropertyName::person());
+        }
+    }
+
     if (d->comboBox)
     {
         d->comboBox->setModel(model, filteredModel, filterModel);

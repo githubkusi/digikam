@@ -391,6 +391,26 @@ void ContextMenuHelper::addActionDeleteTags(Digikam::TagModificationHelper* help
             helper, SLOT(slotMultipleTagDel()));
 }
 
+void ContextMenuHelper::addActionTagToFaceTag(TagModificationHelper* helper, TAlbum* tag)
+{
+    QAction* const tagToFaceTagAction = new QAction(QIcon::fromTheme(QLatin1String("tag-properties")), i18n("Mark As Face Tag"), this);
+    addAction(tagToFaceTagAction);
+    helper->bindTag(tagToFaceTagAction, tag);
+
+    connect(tagToFaceTagAction, SIGNAL(triggered()),
+            helper, SLOT(slotTagToFaceTag()));
+}
+    
+void ContextMenuHelper::addActionTagsToFaceTags(TagModificationHelper* helper, QList< TAlbum* > tags)
+{
+    QAction* const tagToFaceTagsAction = new QAction(QIcon::fromTheme(QLatin1String("tag-properties")), i18n("Mark As Face Tags"), this);
+    addAction(tagToFaceTagsAction);
+    helper->bindMultipleTags(tagToFaceTagsAction, tags);
+
+    connect(tagToFaceTagsAction, SIGNAL(triggered()),
+            helper, SLOT(slotMultipleTagsToFaceTags()));
+}
+
 void ContextMenuHelper::addActionEditTag(TagModificationHelper* helper, TAlbum* tag)
 {
     QAction* const editTagAction = new QAction(QIcon::fromTheme(QLatin1String("tag-properties")), i18nc("Edit Tag Properties", "Properties..."), this);
@@ -399,6 +419,28 @@ void ContextMenuHelper::addActionEditTag(TagModificationHelper* helper, TAlbum* 
 
     connect(editTagAction, SIGNAL(triggered()),
             helper, SLOT(slotTagEdit()));
+}
+
+void ContextMenuHelper::addActionDeleteFaceTag(TagModificationHelper* helper, TAlbum* tag)
+{
+    QAction* const deleteFaceTagAction = new QAction(QIcon::fromTheme(QLatin1String("user-trash")), i18n("Remove Face Tag"), this);
+    deleteFaceTagAction->setWhatsThis(i18n("Removes the face property from the selected tag and the face region from the contained images. Can also untag the images if wished."));
+    addAction(deleteFaceTagAction);
+    helper->bindTag(deleteFaceTagAction, tag);
+
+    connect(deleteFaceTagAction, SIGNAL(triggered()),
+            helper, SLOT(slotFaceTagDelete()));
+}
+
+void ContextMenuHelper::addActionDeleteFaceTags(TagModificationHelper* helper, QList< TAlbum* > tags)
+{
+    QAction* const deleteFaceTagsAction = new QAction(QIcon::fromTheme(QLatin1String("user-trash")), i18n("Remove Face Tags"), this);
+    deleteFaceTagsAction->setWhatsThis(i18n("Removes the face property from the selected tags and the face region from the contained images. Can also untag the images if wished."));
+    addAction(deleteFaceTagsAction);
+    helper->bindMultipleTags(deleteFaceTagsAction, tags);
+
+    connect(deleteFaceTagsAction, SIGNAL(triggered()),
+            helper, SLOT(slotMultipleFaceTagDel()));
 }
 
 void ContextMenuHelper::addActionNewAlbum(AlbumModificationHelper* helper, PAlbum* parentAlbum)

@@ -127,7 +127,6 @@ void ApplicationSettings::readSettings()
     d->imageSorting                      = group.readEntry(d->configImageSortingEntry,        (int)ImageSortSettings::AscendingOrder);
     d->imageGroupMode                    = group.readEntry(d->configImageGroupModeEntry,      (int)ImageSortSettings::CategoryByAlbum);
     d->imageGroupSortOrder               = group.readEntry(d->configImageGroupSortOrderEntry, (int)ImageSortSettings::AscendingOrder);
-    d->fuzzySearchReferenceImage         = group.readEntry(d->configFuzzySearchReferenceImage,(int)0);
 
     d->itemLeftClickAction               = ApplicationSettings::ItemLeftClickAction(group.readEntry( d->configItemLeftClickActionEntry,
                                            (int)ApplicationSettings::ShowPreview));
@@ -150,16 +149,16 @@ void ApplicationSettings::readSettings()
     d->iconShowResolution                = group.readEntry(d->configIconShowResolutionEntry,           false);
     d->iconShowAspectRatio               = group.readEntry(d->configIconShowAspectRatioEntry,          false);
     d->iconShowSize                      = group.readEntry(d->configIconShowSizeEntry,                 false);
-    d->iconShowDate                      = group.readEntry(d->configIconShowDateEntry,                 true);
-    d->iconShowModDate                   = group.readEntry(d->configIconShowModificationDateEntry,     true);
+    d->iconShowDate                      = group.readEntry(d->configIconShowDateEntry,                 false);
+    d->iconShowModDate                   = group.readEntry(d->configIconShowModificationDateEntry,     false);
     d->iconShowTitle                     = group.readEntry(d->configIconShowTitleEntry,                true);
     d->iconShowComments                  = group.readEntry(d->configIconShowCommentsEntry,             true);
     d->iconShowTags                      = group.readEntry(d->configIconShowTagsEntry,                 true);
     d->iconShowOverlays                  = group.readEntry(d->configIconShowOverlaysEntry,             true);
     d->iconShowFullscreen                = group.readEntry(d->configIconShowFullscreenEntry,           true);
     d->iconShowRating                    = group.readEntry(d->configIconShowRatingEntry,               true);
-    d->iconShowImageFormat               = group.readEntry(d->configIconShowImageFormatEntry,          false);
-    d->iconShowCoordinates               = group.readEntry(d->configIconShowCoordinatesEntry,          false);
+    d->iconShowImageFormat               = group.readEntry(d->configIconShowImageFormatEntry,          true);
+    d->iconShowCoordinates               = group.readEntry(d->configIconShowCoordinatesEntry,          true);
     d->iconviewFont                      = group.readEntry(d->configIconViewFontEntry,                 QFontDatabase::systemFont(QFontDatabase::GeneralFont));
 
     d->toolTipsFont                      = group.readEntry(d->configToolTipsFontEntry,                 QFontDatabase::systemFont(QFontDatabase::GeneralFont));
@@ -236,6 +235,7 @@ void ApplicationSettings::readSettings()
     d->showPermanentDeleteDialog         = group.readEntry(d->configShowPermanentDeleteDialogEntry,                   true);
     d->sidebarApplyDirectly              = group.readEntry(d->configApplySidebarChangesDirectlyEntry,                 false);
     d->scrollItemToCenter                = group.readEntry(d->configScrollItemToCenterEntry,                          false);
+    d->showOnlyPersonTagsInPeopleSidebar = group.readEntry(d->configShowOnlyPersonTagsInPeopleSidebarEntry,           true);
     d->stringComparisonType              = (StringComparisonType) group.readEntry(d->configStringComparisonTypeEntry, (int) Natural);
 
 #ifdef HAVE_APPSTYLE_SUPPORT
@@ -298,7 +298,6 @@ void ApplicationSettings::saveSettings()
     group.writeEntry(d->configImageSortingEntry,                       (int)d->imageSorting);
     group.writeEntry(d->configImageGroupModeEntry,                     (int)d->imageGroupMode);
     group.writeEntry(d->configImageGroupSortOrderEntry,                (int)d->imageGroupSortOrder);
-    group.writeEntry(d->configFuzzySearchReferenceImage,               (int)d->fuzzySearchReferenceImage);
 
     group.writeEntry(d->configItemLeftClickActionEntry,                (int)d->itemLeftClickAction);
     group.writeEntry(d->configDefaultIconSizeEntry,                    QString::number(d->thumbnailSize));
@@ -402,6 +401,7 @@ void ApplicationSettings::saveSettings()
     group.writeEntry(d->configShowPermanentDeleteDialogEntry,          d->showPermanentDeleteDialog);
     group.writeEntry(d->configApplySidebarChangesDirectlyEntry,        d->sidebarApplyDirectly);
     group.writeEntry(d->configScrollItemToCenterEntry,                 d->scrollItemToCenter);
+    group.writeEntry(d->configShowOnlyPersonTagsInPeopleSidebarEntry,  d->showOnlyPersonTagsInPeopleSidebar);
     group.writeEntry(d->configStringComparisonTypeEntry,               (int) d->stringComparisonType);
 #ifdef HAVE_APPSTYLE_SUPPORT
     group.writeEntry(d->configApplicationStyleEntry,                   d->applicationStyle);

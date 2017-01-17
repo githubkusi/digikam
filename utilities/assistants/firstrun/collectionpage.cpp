@@ -6,7 +6,7 @@
  * Date        : 2009-28-04
  * Description : first run assistant dialog
  *
- * Copyright (C) 2009-2016 by Gilles Caulier <caulier dot gilles at gmail dot com>
+ * Copyright (C) 2009-2017 by Gilles Caulier <caulier dot gilles at gmail dot com>
  *
  * This program is free software; you can redistribute it
  * and/or modify it under the terms of the GNU General
@@ -102,7 +102,7 @@ CollectionPage::CollectionPage(FirstRunDlg* const dlg)
     d->rootAlbumPathRequester = new DFileSelector(widget);
     d->rootAlbumPathRequester->setFileDlgMode(QFileDialog::Directory);
     d->rootAlbumPathRequester->setFileDlgOptions(QFileDialog::ShowDirsOnly);
-    d->rootAlbumPathRequester->lineEdit()->setText(picturesPath);
+    d->rootAlbumPathRequester->setFileDlgPath(picturesPath);
 
     vlayout->addWidget(textLabel1);
     vlayout->addWidget(d->rootAlbumPathRequester);
@@ -148,7 +148,7 @@ bool CollectionPage::checkSettings()
 
 bool CollectionPage::checkRootAlbum(QString& rootAlbumFolder)
 {
-    rootAlbumFolder = d->rootAlbumPathRequester->lineEdit()->text();
+    rootAlbumFolder = d->rootAlbumPathRequester->fileDlgPath();
     qCDebug(DIGIKAM_GENERAL_LOG) << "Root album is : " << rootAlbumFolder;
 
     if (rootAlbumFolder.isEmpty())
@@ -186,7 +186,7 @@ bool CollectionPage::checkRootAlbum(QString& rootAlbumFolder)
                                        i18n("<p>The folder to use as the root album path does not exist:</p>"
                                                  "<p><b>%1</b></p>"
                                                  "Would you like digiKam to create it for you?",
-                                                 rootAlbumFolder));
+                                                 QDir::toNativeSeparators(rootAlbumFolder)));
 
         if (rc == QMessageBox::No)
         {
@@ -198,7 +198,7 @@ bool CollectionPage::checkRootAlbum(QString& rootAlbumFolder)
             QMessageBox::information(this, i18n("Create Root Album Folder Failed"),
                                      i18n("<p>digiKam could not create the folder to use as the root album.\n"
                                           "Please select a different location.</p>"
-                                          "<p><b>%1</b></p>", rootAlbumFolder));
+                                          "<p><b>%1</b></p>", QDir::toNativeSeparators(rootAlbumFolder)));
             return false;
         }
     }

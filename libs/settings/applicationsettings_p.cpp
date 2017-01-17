@@ -131,6 +131,7 @@ const QString ApplicationSettings::Private::configShowTrashDeleteDialogEntry(QLa
 const QString ApplicationSettings::Private::configShowPermanentDeleteDialogEntry(QLatin1String("Show Permanent Delete Dialog"));
 const QString ApplicationSettings::Private::configApplySidebarChangesDirectlyEntry(QLatin1String("Apply Sidebar Changes Directly"));
 const QString ApplicationSettings::Private::configScrollItemToCenterEntry(QLatin1String("Scroll Current Item To Center"));
+const QString ApplicationSettings::Private::configShowOnlyPersonTagsInPeopleSidebarEntry(QLatin1String("Show Only Face Tags For Assigning Name"));
 const QString ApplicationSettings::Private::configSyncBalootoDigikamEntry(QLatin1String("Sync Baloo to Digikam"));
 const QString ApplicationSettings::Private::configSyncDigikamtoBalooEntry(QLatin1String("Sync Digikam to Baloo"));
 const QString ApplicationSettings::Private::configStringComparisonTypeEntry(QLatin1String("String Comparison Type"));
@@ -140,7 +141,6 @@ const QString ApplicationSettings::Private::configIconThemeEntry(QLatin1String("
 const QString ApplicationSettings::Private::configScanAtStartEntry(QLatin1String("Scan At Start"));
 const QString ApplicationSettings::Private::configDuplicatesSearchLastMinSimilarity(QLatin1String("Last minimum similarity"));
 const QString ApplicationSettings::Private::configDuplicatesSearchLastMaxSimilarity(QLatin1String("Last maximum similarity"));
-const QString ApplicationSettings::Private::configFuzzySearchReferenceImage(QLatin1String("Fuzzy reference image id"));
 
 ApplicationSettings::Private::Private(ApplicationSettings* const qq)
     : showSplash(false),
@@ -149,6 +149,7 @@ ApplicationSettings::Private::Private(ApplicationSettings* const qq)
       showPermanentDeleteDialog(false),
       sidebarApplyDirectly(false),
       scrollItemToCenter(false),
+      showOnlyPersonTagsInPeopleSidebar(false),
       iconShowName(false),
       iconShowSize(false),
       iconShowDate(false),
@@ -213,7 +214,6 @@ ApplicationSettings::Private::Private(ApplicationSettings* const qq)
       imageGroupMode(0),
       imageGroupSortOrder(0),
       itemLeftClickAction(ApplicationSettings::ShowPreview),
-      fuzzySearchReferenceImage(0),
       syncToDigikam(false),
       syncToBaloo(false),
       faceDetectionAccuracy(0.8),
@@ -262,6 +262,7 @@ void ApplicationSettings::Private::init()
     showPermanentDeleteDialog           = true;
     sidebarApplyDirectly                = false;
     scrollItemToCenter                  = false;
+    showOnlyPersonTagsInPeopleSidebar   = false;
 
     iconShowName                        = false;
     iconShowSize                        = false;
@@ -331,8 +332,6 @@ void ApplicationSettings::Private::init()
 
     duplicatesSearchLastMinSimilarity   = 90;
     duplicatesSearchLastMaxSimilarity   = 100;
-
-    fuzzySearchReferenceImage           = 0;
 
     scanAtStart                         = true;
     stringComparisonType                = ApplicationSettings::Natural;

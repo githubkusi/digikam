@@ -44,6 +44,7 @@
 #include "albummanager.h"
 #include "contextmenuhelper.h"
 #include "tagmodificationhelper.h"
+#include "facetags.h"
 
 namespace Digikam
 {
@@ -54,12 +55,14 @@ public:
 
     Private() :
         showFindDuplicateAction(true),
+        showDeleteFaceTagsAction(false),
         resetIconAction(0),
         findDuplAction(0)
     {
     }
 
     bool     showFindDuplicateAction;
+    bool     showDeleteFaceTagsAction;
 
     QAction* resetIconAction;
     QAction* findDuplAction;
@@ -86,6 +89,11 @@ TagFolderView::~TagFolderView()
 void TagFolderView::setShowFindDuplicateAction(bool show)
 {
     d->showFindDuplicateAction = show;
+}
+
+void TagFolderView::setShowDeleteFaceTagsAction(bool show)
+{
+    d->showDeleteFaceTagsAction = show;
 }
 
 QString TagFolderView::contextMenuTitle() const
@@ -126,8 +134,21 @@ void TagFolderView::addCustomContextMenuActions(ContextMenuHelper& cmh, Album* a
 
     cmh.addExportMenu();
     cmh.addSeparator();
-    cmh.addActionDeleteTag(tagModificationHelper(), tag);
-    cmh.addSeparator();
+    if (d->showDeleteFaceTagsAction)
+    {
+        cmh.addActionDeleteFaceTag(tagModificationHelper(),tag);
+        cmh.addSeparator();
+    }
+    else
+    {
+        cmh.addActionDeleteTag(tagModificationHelper(), tag);
+        cmh.addSeparator();
+        // If the tag is no face tag, add the option to set it as face tag.
+        if (!FaceTags::isPerson(tag->id()))
+        {
+            cmh.addActionTagToFaceTag(tagModificationHelper(),tag);
+        }
+    }
     cmh.addActionEditTag(tagModificationHelper(), tag);
 
     connect(&cmh, SIGNAL(signalAddNewTagFromABCMenu(QString)),
@@ -239,7 +260,9 @@ void TagFolderView::handleCustomContextMenuAction(QAction* action, AlbumPointer<
     }
     else if (action == d->findDuplAction)
     {
-        emit signalFindDuplicatesInAlbum(tag);
+        QList<TAlbum*> selected = selectedTagAlbums();
+
+        emit signalFindDuplicates(selected);
     }
 }
 
@@ -268,7 +291,25 @@ void TagFolderView::setContexMenuItems(ContextMenuHelper& cmh, QList< TAlbum* > 
     cmh.addAction(collapseSel, this, SLOT(slotCollapseNode()), false);
     cmh.addSeparator();
     cmh.addExportMenu();
-    cmh.addActionDeleteTags(tagModificationHelper(),albums);
+    cmh.addSeparator();
+    if (d->showDeleteFaceTagsAction)
+    {
+        cmh.addActionDeleteFaceTags(tagModificationHelper(),albums);
+    }
+    else
+    {
+        cmh.addActionDeleteTags(tagModificationHelper(),albums);
+        // If one of the selected tags is no face tag, add the action to mark them as face tags.
+        foreach (TAlbum * const tag, albums)
+        {
+            if (!FaceTags::isPerson(tag->id()))
+            {
+                cmh.addSeparator();
+                cmh.addActionTagToFaceTag(tagModificationHelper(),tag);
+                break;
+            }
+        }
+    }
     cmh.addSeparator();
 }
 

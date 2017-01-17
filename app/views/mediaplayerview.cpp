@@ -57,7 +57,7 @@ using namespace QtAV;
 
 namespace Digikam
 {
-
+/*
 class MediaPlayerThread : public QThread
 {
 public:
@@ -84,7 +84,7 @@ private:
 
     AVPlayer* m_player;
 };
-
+*/
 // --------------------------------------------------------
 
 class MediaPlayerMouseClickFilter : public QObject
@@ -162,7 +162,7 @@ public:
         toolBar(0),
         videoWidget(0),
         player(0),
-        thread(0),
+        //thread(0),
         slider(0),
         tlabel(0)
     {
@@ -179,7 +179,7 @@ public:
 
     WidgetRenderer*      videoWidget;
     AVPlayer*            player;
-    MediaPlayerThread*   thread;
+    //MediaPlayerThread*   thread;
     QSlider*             slider;
     QLabel*              tlabel;
     QUrl                 currentItem;
@@ -217,8 +217,8 @@ MediaPlayerView::MediaPlayerView(QWidget* const parent)
 
     d->playerView  = new QFrame(this);
     d->videoWidget = new WidgetRenderer(this);
-    d->player      = new AVPlayer;
-    d->thread      = new MediaPlayerThread(d->player);
+    d->player      = new AVPlayer(this);
+    //d->thread      = new MediaPlayerThread(d->player);
 
     DHBox* const hbox = new DHBox(this);
     d->slider         = new QSlider(Qt::Horizontal, hbox);
@@ -229,7 +229,6 @@ MediaPlayerView::MediaPlayerView(QWidget* const parent)
 
     d->videoWidget->setOutAspectRatioMode(VideoRenderer::VideoAspectRatio);
     d->player->setRenderer(d->videoWidget);
-    d->player->setNotifyInterval(250);
 
     d->playerView->setFrameStyle(QFrame::StyledPanel | QFrame::Plain);
     d->playerView->setLineWidth(1);
@@ -289,15 +288,17 @@ MediaPlayerView::MediaPlayerView(QWidget* const parent)
 
     connect(d->player, SIGNAL(error(QtAV::AVError)),
             this, SLOT(slotHandlePlayerError(QtAV::AVError)));
+
+    qCDebug(DIGIKAM_GENERAL_LOG) << "AudioOutput backends:" << d->player->audio()->backendsAvailable();
 }
 
 MediaPlayerView::~MediaPlayerView()
 {
     d->player->stop();
-    d->thread->quit();
-    d->thread->wait();
-    delete d->thread;
-    delete d->player;
+    //d->thread->quit();
+    //d->thread->wait();
+    //delete d->thread;
+    //delete d->player;
     delete d;
 }
 
@@ -305,7 +306,7 @@ void MediaPlayerView::reload()
 {
     d->player->stop();
     d->player->setFile(d->currentItem.toLocalFile());
-    d->thread->start();
+    //d->thread->start();
     d->player->play();
 }
 
@@ -384,7 +385,7 @@ void MediaPlayerView::slotPausePlay()
 {
     if (!d->player->isPlaying())
     {
-        d->thread->start();
+        //d->thread->start();
         d->player->play();
         return;
     }
@@ -432,7 +433,7 @@ void MediaPlayerView::setCurrentItem(const QUrl& url, bool hasPrevious, bool has
     d->player->stop();
     setPreviewMode(Private::PlayerView);
     d->player->setFile(d->currentItem.toLocalFile());
-    d->thread->start();
+    //d->thread->start();
     d->player->play();
 }
 

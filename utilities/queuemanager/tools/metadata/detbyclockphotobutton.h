@@ -4,10 +4,10 @@
  *   This file is a part of the digikam project
  *   http://www.digikam.org
  *  
- *   Date             : 2017-01-01
+ *   Date        : 2017-01-01
  *   Description : button for choosing time difference photo which accepts drag & drop
  *  
- *   Copyright (C) 2017      by Markus Leuthold <kusi at forum dot titlis dot org>
+ *   Copyright (C) 2017 by Markus Leuthold <kusi at forum dot titlis dot org>
  *  
  *   This program is free software; you can redistribute it
  *   and/or modify it under the terms of the GNU General

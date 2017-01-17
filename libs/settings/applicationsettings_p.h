@@ -64,6 +64,7 @@ public:
     static const QString                      configThemeEntry;
     static const QString                      configSidebarTitleStyleEntry;
     static const QString                      configScrollItemToCenterEntry;
+    static const QString                      configShowOnlyPersonTagsInPeopleSidebarEntry;
     static const QString                      configRatingFilterConditionEntry;
     static const QString                      configRecursiveAlbumsEntry;
     static const QString                      configRecursiveTagsEntry;
@@ -137,7 +138,6 @@ public:
     static const QString                      configIconThemeEntry;
     static const QString                      configDuplicatesSearchLastMinSimilarity;
     static const QString                      configDuplicatesSearchLastMaxSimilarity;
-    static const QString                      configFuzzySearchReferenceImage;
 
     // start up setting
     bool                                      showSplash;
@@ -149,6 +149,8 @@ public:
     bool                                      sidebarApplyDirectly;
     // item center settings
     bool                                      scrollItemToCenter;
+    // tag filter settings
+    bool                                      showOnlyPersonTagsInPeopleSidebar;
 
     // icon view settings
     bool                                      iconShowName;
@@ -247,7 +249,6 @@ public:
     int                                       imageGroupMode;
     int                                       imageGroupSortOrder;
     ApplicationSettings::ItemLeftClickAction  itemLeftClickAction;
-    qlonglong                                 fuzzySearchReferenceImage;
 
     // Baloo settings
     bool                                      syncToDigikam;

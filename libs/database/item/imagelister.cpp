@@ -207,11 +207,12 @@ void ImageLister::listAlbum(ImageListerReceiver* const receiver, int albumRootId
     {
         // SQLite allows no more than 999 parameters
         const int maxParams = CoreDbAccess().backend()->maximumBoundValues();
-        for (int i=0; i<albumIds.size(); i++)
+
+        for (int i = 0 ; i < albumIds.size() ; i++)
         {
             QString q           = query;
             QList<QVariant> ids =  (albumIds.size() <= maxParams) ? albumIds : albumIds.mid(i, maxParams);
-            i                   += ids.count();
+            i                  += ids.count();
 
             QList<QVariant> v;
             CoreDbAccess  access;
@@ -273,7 +274,7 @@ void ImageLister::listTag(ImageListerReceiver* const receiver, QList<int> tagIds
     QSet<ImageListerRecord> records;
     QList<int>::iterator it;
 
-    for(it = tagIds.begin(); it != tagIds.end(); ++it)
+    for(it = tagIds.begin() ; it != tagIds.end() ; ++it)
     {
         QList<QVariant>         values;
         QMap<QString, QVariant> parameters;
@@ -314,10 +315,10 @@ void ImageLister::listTag(ImageListerReceiver* const receiver, QList<int> tagIds
             record.format            = (*it).toString();
             ++it;
             record.creationDate      = (*it).isNull() ? QDateTime()
-                                    : QDateTime::fromString((*it).toString(), Qt::ISODate);
+                                       : QDateTime::fromString((*it).toString(), Qt::ISODate);
             ++it;
             record.modificationDate  = (*it).isNull() ? QDateTime()
-                                    : QDateTime::fromString((*it).toString(), Qt::ISODate);
+                                       : QDateTime::fromString((*it).toString(), Qt::ISODate);
             ++it;
             record.fileSize          = toInt32BitSafe(it);
             ++it;
@@ -507,7 +508,7 @@ void ImageLister::listAreaRange(ImageListerReceiver* const receiver, double lat1
     }
 }
 
-void ImageLister::listSearch(ImageListerReceiver* const receiver, const QString& xml, int limit)
+void ImageLister::listSearch(ImageListerReceiver* const receiver, const QString& xml, int limit, qlonglong referenceImageId)
 {
     if (xml.isEmpty())
     {
@@ -576,6 +577,8 @@ void ImageLister::listSearch(ImageListerReceiver* const receiver, const QString&
     int       width, height;
     double    lat,lon;
 
+    CoreDbAccess access;
+
     for (QList<QVariant>::const_iterator it = values.constBegin(); it != values.constEnd();)
     {
         ImageListerRecord record;
@@ -610,6 +613,10 @@ void ImageLister::listSearch(ImageListerReceiver* const receiver, const QString&
         ++it;
         lon                      = (*it).toDouble();
         ++it;
+
+        record.currentSimilarity                 = access.db()->getImageProperty(record.imageID,QLatin1String("similarityTo_") +
+                                                   QString::number(referenceImageId)).toDouble();
+        record.currentFuzzySearchReferenceImage  = referenceImageId;
 
         if (d->listOnlyAvailableImages && !albumRoots.contains(record.albumRootID))
         {
@@ -720,12 +727,30 @@ void ImageLister::listImageTagPropertySearch(ImageListerReceiver* const receiver
         height                   = (*it).toInt();
         ++it;
         // sync the following order with the places where it's read, e.g., FaceTagsIface
-        record.extraValues      << (*it); // value
+        QVariant value           = (*it);
         ++it;
-        record.extraValues      << (*it); // property
+        QVariant property        = (*it);
         ++it;
-        record.extraValues      << (*it); // tag id
+        QVariant tagId           = (*it);
         ++it;
+
+        // If the property is the autodetected person, get the original image tag properties
+        if (property.toString().compare(ImageTagPropertyName::autodetectedPerson()) == 0)
+        {
+            // If we split the value by ',' we must have the segments tagId, property, region
+            // Set the values.
+            QStringList values = value.toString().split(QLatin1Char(','));
+
+            if (values.size() == 3)
+            {
+                value    = values.at(2);
+                property = values.at(1);
+                tagId    = values.at(0);
+            }
+        }
+        record.extraValues << value;
+        record.extraValues << property;
+        record.extraValues << tagId;
 
         if (d->listOnlyAvailableImages && !albumRoots.contains(record.albumRootID))
         {
@@ -749,11 +774,11 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
         return;
     }
 
-    QStringRef type             = reader.attributes().value(QLatin1String("type"));
-    QStringRef numResultsString = reader.attributes().value(QLatin1String("numberofresults"));
-    QStringRef thresholdString  = reader.attributes().value(QLatin1String("threshold"));
-    QStringRef maxThresholdString  = reader.attributes().value(QLatin1String("maxthreshold"));
-    QStringRef sketchTypeString = reader.attributes().value(QLatin1String("sketchtype"));
+    QStringRef type                  = reader.attributes().value(QLatin1String("type"));
+    QStringRef numResultsString      = reader.attributes().value(QLatin1String("numberofresults"));
+    QStringRef thresholdString       = reader.attributes().value(QLatin1String("threshold"));
+    QStringRef maxThresholdString    = reader.attributes().value(QLatin1String("maxthreshold"));
+    QStringRef sketchTypeString      = reader.attributes().value(QLatin1String("sketchtype"));
 
     double threshold                 = 0.9;
     double maxThreshold              = 1.0;
@@ -769,12 +794,12 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
     {
         threshold = qMax(thresholdString.toString().toDouble(), 0.1);
     }
-    
+
     if (!maxThresholdString.isNull())
     {
         maxThreshold = qMax(maxThresholdString.toString().toDouble(), 0.1);
     }
-    
+
     if (sketchTypeString == QLatin1String("handdrawn"))
     {
         sketchType = HaarIface::HanddrawnSketch;
@@ -784,7 +809,7 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
         sketchType = HaarIface::ScannedSketch;
     }
 
-    QList<qlonglong> list;
+    QMap<qlonglong, double> imageSimilarityMap;
 
     if (type == QLatin1String("signature"))
     {
@@ -796,7 +821,7 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
             iface.setAlbumRootsToSearch(albumRootsToList());
         }
 
-        list = iface.bestMatchesForSignature(sig, numberOfResults, sketchType);
+        imageSimilarityMap = iface.bestMatchesForSignature(sig, numberOfResults, sketchType);
     }
     else if (type == QLatin1String("imageid"))
     {
@@ -808,7 +833,7 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
             iface.setAlbumRootsToSearch(albumRootsToList());
         }
 
-        list = iface.bestMatchesForImageWithThreshold(id, threshold,maxThreshold, sketchType).second;
+        imageSimilarityMap = iface.bestMatchesForImageWithThreshold(id, threshold,maxThreshold, sketchType).second;
     }
     else if (type == QLatin1String("image"))
     {
@@ -821,10 +846,106 @@ void ImageLister::listHaarSearch(ImageListerReceiver* const receiver, const QStr
             iface.setAlbumRootsToSearch(albumRootsToList());
         }
 
-        list = iface.bestMatchesForImageWithThreshold(path, threshold,maxThreshold, sketchType).second;
+        imageSimilarityMap = iface.bestMatchesForImageWithThreshold(path, threshold,maxThreshold, sketchType).second;
     }
 
-    listFromIdList(receiver, list);
+    listFromHaarSearch(receiver, imageSimilarityMap);
+}
+
+void ImageLister::listFromHaarSearch(ImageListerReceiver* const receiver, const QMap<qlonglong,double>& imageSimilarityMap)
+{
+    QList<QVariant> values;
+    QString         errMsg;
+    bool            executionSuccess = true;
+
+    {
+        // Generate the query that returns the similarity as constant for a given image id.
+        CoreDbAccess access;
+        DbEngineSqlQuery query = access.backend()->prepareQuery(QString::fromUtf8(
+                             "SELECT DISTINCT Images.id, Images.name, Images.album, "
+                             "       Albums.albumRoot, "
+                             "       ImageInformation.rating, Images.category, "
+                             "       ImageInformation.format, ImageInformation.creationDate, "
+                             "       Images.modificationDate, Images.fileSize, "
+                             "       ImageInformation.width, ImageInformation.height "
+                             " FROM Images "
+                             "       LEFT JOIN ImageInformation ON Images.id=ImageInformation.imageid "
+                             "       LEFT JOIN Albums ON Albums.id=Images.album "
+                             " WHERE Images.status=1 AND Images.id = ?;"));
+
+        qlonglong imageId;
+        double similarity;
+
+        // Iterate over the image similarity map and bind the image id and similarity to the query.
+        for (QMap<qlonglong, double>::const_iterator it = imageSimilarityMap.constBegin(); it != imageSimilarityMap.constEnd(); ++it)
+        {
+            similarity = it.value();
+            imageId    = it.key();
+
+            query.bindValue(0, imageId);
+            executionSuccess = access.backend()->exec(query);
+
+            if (!executionSuccess)
+            {
+                errMsg = access.backend()->lastError();
+                break;
+            }
+
+            // Add the similarity to the table row.
+            QList<QVariant> tableRow = access.backend()->readToList(query);
+            tableRow.append(similarity);
+
+            // append results to list
+            values << tableRow;
+        }
+    }
+
+    if (!executionSuccess)
+    {
+        receiver->error(errMsg);
+        return;
+    }
+
+    int width, height;
+
+    for (QList<QVariant>::const_iterator it = values.constBegin(); it != values.constEnd();)
+    {
+        ImageListerRecord record;
+
+        record.imageID           = (*it).toLongLong();
+        ++it;
+        record.name              = (*it).toString();
+        ++it;
+        record.albumID           = (*it).toInt();
+        ++it;
+        record.albumRootID       = (*it).toInt();
+        ++it;
+        record.rating            = (*it).toInt();
+        ++it;
+        record.category          = (DatabaseItem::Category)(*it).toInt();
+        ++it;
+        record.format            = (*it).toString();
+        ++it;
+        record.creationDate      = (*it).isNull() ? QDateTime()
+                                   : QDateTime::fromString((*it).toString(), Qt::ISODate);
+        ++it;
+        record.modificationDate  = (*it).isNull() ? QDateTime()
+                                   : QDateTime::fromString((*it).toString(), Qt::ISODate);
+        ++it;
+        record.fileSize          = toInt32BitSafe(it);
+        ++it;
+        width                    = (*it).toInt();
+        ++it;
+        height                   = (*it).toInt();
+        ++it;
+
+        record.imageSize         = QSize(width, height);
+
+        record.currentSimilarity = (*it).toDouble();
+        ++it;
+
+        receiver->receive(record);
+    }
 }
 
 void ImageLister::listFromIdList(ImageListerReceiver* const receiver, const QList<qlonglong>& imageIds)
@@ -959,8 +1080,9 @@ QString ImageLister::tagSearchXml(int tagId, const QString& type, bool includeCh
         writer.setDefaultFieldOperator(SearchXml::Or);
 
         QStringList properties;
-        properties << QLatin1String("autodetectedFace");
-        properties << QLatin1String("tagRegion");
+        properties << ImageTagPropertyName::autodetectedPerson();
+        properties << ImageTagPropertyName::autodetectedFace();
+        properties << ImageTagPropertyName::tagRegion();
 
         foreach(const QString& property, properties)
         {

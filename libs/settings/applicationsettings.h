@@ -376,6 +376,9 @@ public:
     void setScrollItemToCenter(bool val);
     bool getScrollItemToCenter() const;
 
+    void setShowOnlyPersonTagsInPeopleSidebar(bool val);
+    bool showOnlyPersonTagsInPeopleSidebar() const;
+
     /**
      * Defines the way in which string comparisons are performed.
      *
@@ -424,9 +427,6 @@ public:
 
     void setDuplicatesSearchLastMaxSimilarity(int val);
     int  getDuplicatesSearchLastMaxSimilarity() const;
-
-    void setCurrentFuzzySearchReferenceImage(qlonglong val);
-    qlonglong  getCurrentFuzzySearchReferenceImage() const;
 
 private Q_SLOTS:
 
